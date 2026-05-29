@@ -184,7 +184,7 @@ function ProgressBar({ current, total, labels }: { current: number; total: numbe
 function StickySummary({ total }: { total: number }) {
   return (
     <div className="sticky top-0 z-30 bg-slate-900 text-white px-4 py-2 flex items-center justify-between shadow-lg border-b border-slate-700">
-      <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Ваша кошик</span>
+      <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Ваш кошик</span>
       <span className="text-lg font-black text-blue-400 tabular-nums">{fmt(total)}</span>
     </div>
   );
@@ -420,23 +420,31 @@ function StepEngine({ state, setState }: { state: any; setState: any }) {
 
   const renderEngineCard = (engine: any) => {
     const selected = state.engine?.id === engine.id;
-    const displayPrice = state.wifi ? engine.wifiPrice : engine.price;
-    const displayName = state.wifi ? engine.wifiModel : engine.name;
+    const isPremium = engine.tier === "premium";
+    const displayPrice = (selected && state.wifi && !isPremium) ? engine.wifiPrice : engine.price;
+    const displayName = (selected && state.wifi && !isPremium) ? engine.wifiModel : engine.name;
+    const diff = engine.wifiPrice - engine.price;
+
+    let badge = null;
+    if (engine.id === "edinger_s8") badge = <span className="text-[10px] bg-red-100 text-red-600 px-1.5 py-0.5 rounded-full ml-1 uppercase font-bold tracking-wider">🔥 Хіт продажів</span>;
+    if (engine.id === "miller_800") badge = <span className="text-[10px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full ml-1 uppercase font-bold tracking-wider">⭐ Вибір професіоналів</span>;
 
     return (
-      <button
+      <div
         key={engine.id}
-        onClick={() => setState((s: any) => ({ ...s, engine }))}
-        className={`w-full p-4 rounded-2xl border-2 text-left transition-all active:scale-[0.98] ${
+        className={`w-full rounded-2xl border-2 text-left transition-all overflow-hidden ${
           selected
             ? "border-blue-600 bg-blue-50 shadow-md"
             : "border-slate-200 bg-white hover:border-slate-300"
         }`}
       >
-        <div className="flex justify-between items-start gap-2">
-          <div>
+        <button
+          onClick={() => setState((s: any) => ({ ...s, engine }))}
+          className="w-full p-4 flex justify-between items-start gap-2 active:scale-[0.99]"
+        >
+          <div className="text-left">
             <div className={`font-black text-sm ${selected ? "text-blue-800" : "text-slate-800"}`}>
-              {displayName}
+              {displayName} {badge}
             </div>
             <div className="text-xs text-slate-500 mt-0.5">{engine.desc}</div>
             <div className="text-xs text-slate-400 mt-0.5">до {engine.maxWeight} кг</div>
@@ -444,11 +452,28 @@ function StepEngine({ state, setState }: { state: any; setState: any }) {
           <div className={`font-black text-base shrink-0 ${selected ? "text-blue-600" : "text-slate-700"}`}>
             {fmt(displayPrice)}
           </div>
-        </div>
+        </button>
+
         {selected && (
-          <div className="mt-2 text-[11px] text-blue-500 font-bold">✓ Обрано</div>
+          <div className="px-4 pb-4 pt-1 bg-blue-50/50">
+            {!isPremium ? (
+              <button
+                onClick={(e) => { e.stopPropagation(); toggleWifi(); }}
+                className="flex items-center gap-2 mt-2"
+              >
+                <div className={`w-5 h-5 rounded flex items-center justify-center border-2 ${state.wifi ? 'bg-blue-600 border-blue-600' : 'border-slate-300 bg-white'}`}>
+                  {state.wifi && <span className="text-white text-[10px] font-bold">✓</span>}
+                </div>
+                <span className="text-xs font-bold text-slate-700">Додати Wi-Fi модуль (+{diff} ₴)</span>
+              </button>
+            ) : (
+              <div className="text-xs font-bold text-green-600 mt-2 flex items-center gap-1">
+                <span>✓</span> Модуль Wi-Fi вже у вартості
+              </div>
+            )}
+          </div>
         )}
-      </button>
+      </div>
     );
   };
 
@@ -460,31 +485,6 @@ function StepEngine({ state, setState }: { state: any; setState: any }) {
           Показуємо лише двигуни сумісні з вашою фурнітурою (до {state.hardware?.maxWeight || 500} кг)
         </p>
       </div>
-
-      {/* Wi-Fi cross-sell */}
-      <button
-        onClick={toggleWifi}
-        className={`w-full p-4 rounded-2xl border-2 flex items-center justify-between transition-all active:scale-[0.98] ${
-          state.wifi
-            ? "border-blue-600 bg-blue-50 shadow-md"
-            : "border-slate-200 bg-white"
-        }`}
-      >
-        <div className="flex items-center gap-3">
-          <span className="text-2xl">📱</span>
-          <div className="text-left">
-            <div className={`font-black text-sm ${state.wifi ? "text-blue-800" : "text-slate-800"}`}>
-              Відкривати ворота зі смартфона
-            </div>
-            <div className="text-xs text-slate-500">Wi-Fi модуль — керування з будь-якої точки</div>
-          </div>
-        </div>
-        <div className={`w-6 h-6 rounded-md border-2 flex items-center justify-center shrink-0 ${
-          state.wifi ? "bg-blue-600 border-blue-600" : "border-slate-300"
-        }`}>
-          {state.wifi && <span className="text-white text-xs font-black">✓</span>}
-        </div>
-      </button>
 
       {/* Бюджетні */}
       {budget.length > 0 && (
@@ -514,7 +514,10 @@ function StepEngine({ state, setState }: { state: any; setState: any }) {
 
         {/* Зубчаста рейка */}
         <div className="space-y-2">
-          <label className="text-xs font-extrabold text-slate-700 uppercase tracking-wider">Зубчаста рейка (оцинкована, 8 мм)</label>
+          <div>
+            <label className="text-xs font-extrabold text-slate-700 uppercase tracking-wider">Зубчаста рейка (оцинкована, 8 мм)</label>
+            <p className="text-[11px] text-slate-400 mt-0.5 leading-tight">Необхідна для передачі руху від мотора до воріт. Довжина = ширина прорізу + 1 метр.</p>
+          </div>
           <div className="grid grid-cols-1 gap-2">
             {ENGINE_OPTIONS.gearRack.map(opt => (
               <button
@@ -533,7 +536,10 @@ function StepEngine({ state, setState }: { state: any; setState: any }) {
 
         {/* Елементи безпеки */}
         <div className="space-y-2">
-          <label className="text-xs font-extrabold text-slate-700 uppercase tracking-wider">Елементи безпеки</label>
+          <div>
+            <label className="text-xs font-extrabold text-slate-700 uppercase tracking-wider">Елементи безпеки</label>
+            <p className="text-[11px] text-slate-400 mt-0.5 leading-tight">Фотоелементи не дадуть воротам ударити машину або дитину, а лампа сигналізує про рух.</p>
+          </div>
           <div className="grid grid-cols-1 gap-2">
             {ENGINE_OPTIONS.safety.map(opt => (
               <button
@@ -552,7 +558,10 @@ function StepEngine({ state, setState }: { state: any; setState: any }) {
 
         {/* Керування з телефона */}
         <div className="space-y-2">
-          <label className="text-xs font-extrabold text-slate-700 uppercase tracking-wider">Керування з телефона</label>
+          <div>
+            <label className="text-xs font-extrabold text-slate-700 uppercase tracking-wider">Керування з телефона</label>
+            <p className="text-[11px] text-slate-400 mt-0.5 leading-tight">Дозволяє відкривати ворота дзвінком без використання пультів.</p>
+          </div>
           <div className="grid grid-cols-1 gap-2">
             {ENGINE_OPTIONS.phoneControl.map(opt => (
               <button
@@ -578,6 +587,21 @@ function StepSummary({ state, total, onSubmit }: { state: any; total: number; on
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
 
+  const handlePhoneChange = (e: any) => {
+    let val = e.target.value.replace(/\D/g, "");
+    if (val.startsWith("380")) val = val.slice(3);
+    else if (val.startsWith("80")) val = val.slice(1);
+    else if (val.startsWith("0")) val = val;
+    val = val.slice(0, 10);
+
+    let formatted = "+380";
+    if (val.length > 0) formatted += ` (${val.slice(1, 3)}`;
+    if (val.length >= 3) formatted += `) ${val.slice(3, 6)}`;
+    if (val.length >= 6) formatted += `-${val.slice(6, 8)}`;
+    if (val.length >= 8) formatted += `-${val.slice(8, 10)}`;
+    setPhone(formatted === "+380" ? "" : formatted);
+  };
+
   const addonDetails = state.addons.map((id: string) => {
     const a = ADDONS_CATALOG.find((x) => x.id === id);
     if (!a) return null;
@@ -585,15 +609,16 @@ function StepSummary({ state, total, onSubmit }: { state: any; total: number; on
     return { name: a.name, price: a.price };
   }).filter(Boolean);
 
-  const engineName = state.wifi
+  const isPremiumEngine = state.engine?.tier === "premium";
+  const engineName = (state.wifi && !isPremiumEngine)
     ? state.engine?.wifiModel
     : state.engine?.name;
-  const enginePrice = state.wifi
+  const enginePrice = (state.wifi && !isPremiumEngine)
     ? state.engine?.wifiPrice
     : state.engine?.price;
 
   const handleSubmit = () => {
-    if (!name || !phone) { alert("Будь ласка, заповніть ім'я та телефон"); return; }
+    if (!name || phone.length < 19) { alert("Будь ласка, введіть ім'я та коректний номер телефону"); return; }
     const order = {
       hardware: { name: state.hardware?.name, price: state.hardware?.price },
       addons: addonDetails,
@@ -628,7 +653,7 @@ function StepSummary({ state, total, onSubmit }: { state: any; total: number; on
       {/* Деталізація */}
       <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
         <div className="px-4 py-3 bg-slate-50 border-b border-slate-100">
-          <div className="font-black text-sm text-slate-700 uppercase tracking-wider">Ваша кошик</div>
+          <div className="font-black text-sm text-slate-700 uppercase tracking-wider">Ваш кошик</div>
         </div>
         <div className="divide-y divide-slate-100">
           {state.hardware && (
@@ -696,7 +721,7 @@ function StepSummary({ state, total, onSubmit }: { state: any; total: number; on
           type="tel"
           placeholder="+380 (XX) XXX-XX-XX"
           value={phone}
-          onChange={(e) => setPhone(e.target.value)}
+          onChange={handlePhoneChange}
           className="w-full px-4 py-3.5 rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none text-sm font-medium"
         />
         <button
