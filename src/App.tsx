@@ -15,13 +15,22 @@ import {
 
 const ENGINES_CATALOG = [
   {
-    id: 'edinger-s6',
-    name: 'Edinger S6',
-    tag: 'ТОП ЦІНА/ЯКІСТЬ',
-    description: 'Ідеально для побутових воріт до 4-5 метрів. Сталевий редуктор.',
-    specs: ['350W', 'Метал', 'до 600 кг'],
-    basePrice: 7500,
-    maxWeight: 600
+    id: 'edinger-s8',
+    name: 'Edinger S8',
+    tag: 'ХІТ ПРОДАЖУ',
+    description: 'Оптимальний вибір для побутових воріт до 5 метрів. Сталевий редуктор та вбудований Wi-Fi.',
+    specs: ['400W', 'Метал', 'до 800 кг'],
+    basePrice: 8500,
+    maxWeight: 800
+  },
+  {
+    id: 'edinger-i10',
+    name: 'Edinger I10',
+    tag: 'ВИБІР ПОКУПЦІВ',
+    description: 'Потужний двигун для важких воріт. Металевий редуктор та вбудований Wi-Fi.',
+    specs: ['500W', 'Метал', 'до 1000 кг'],
+    basePrice: 10500,
+    maxWeight: 1000
   },
   {
     id: 'miller-technics-800',
@@ -35,7 +44,7 @@ const ENGINES_CATALOG = [
   {
     id: 'rotelli-sl1100',
     name: 'Rotelli Premium SL 1100 Wi-Fi',
-    tag: 'ЄВРОПЕЙСЬКИЙ ПРЕМІУМ',
+    tag: 'ПРЕМІУМ (ІТАЛІЯ)',
     description: 'Промисловий запас міцності та вбудоване керування з телефона в комплекті.',
     specs: ['500W', 'Сталь', 'до 1100 кг'],
     basePrice: 14480,
@@ -270,8 +279,8 @@ export default function App() {
   const railLength = gateWidth + 1;
   const railPrice = railLength * 350;
   
-  const isRotelli = currentEngine.id === 'rotelli-sl1100';
-  const wifiPrice = (includeWifi && !isRotelli) ? 600 : 0;
+  const hasBuiltInWifi = currentEngine.id.includes('edinger') || currentEngine.id.includes('rotelli');
+  const wifiPrice = (includeWifi && !hasBuiltInWifi) ? 600 : 0;
   const safetyPrice = includeSafety ? 1500 : 0;
   const totalPrice = currentHardware.price + currentEngine.basePrice + railPrice + wifiPrice + safetyPrice;
 
@@ -533,13 +542,13 @@ export default function App() {
                   <h4 className="text-sm font-bold text-slate-900 mb-2">Додаткові модулі:</h4>
                   {[
                     { 
-                      state: isRotelli ? true : includeWifi, 
+                      state: hasBuiltInWifi ? true : includeWifi, 
                       setter: setIncludeWifi, 
                       label: 'Управління зі смартфона (Wi-Fi/GSM)', 
-                      sub: 'Відкривайте ворота додатком з будь-якої точки', 
-                      price: isRotelli ? 'Включено' : '+600 ₴', 
-                      badge: 'ХІТ',
-                      disabled: isRotelli
+                      sub: hasBuiltInWifi ? 'Вбудований Wi-Fi модуль! Керуйте воротами зі смартфона (до 10 користувачів безкоштовно)' : 'Відкривайте ворота додатком з будь-якої точки', 
+                      price: hasBuiltInWifi ? 'Вбудовано' : '+600 ₴', 
+                      badge: hasBuiltInWifi ? 'БЕЗКОШТОВНО' : 'ХІТ',
+                      disabled: hasBuiltInWifi
                     },
                     { 
                       state: includeSafety, 
@@ -581,15 +590,16 @@ export default function App() {
 
           {/* Права колонка: кошторис (Світла карточка) */}
           <div className="bg-white border border-slate-200 rounded-[2.5rem] p-8 shadow-2xl h-fit sticky top-20">
-            <h3 className="text-lg font-display font-extrabold text-slate-900 mb-5 pb-4 border-b border-slate-100 flex items-center gap-2">
-              <CheckCircle2 className="w-5 h-5 text-blue-600" /> Ваш кошторис
+            <h3 className="text-lg font-display font-extrabold text-slate-900 mb-5 pb-4 border-b border-slate-100 flex items-center justify-between">
+              <span className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-blue-600" /> Ваш кошторис</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2 py-1 rounded-md border border-emerald-100 flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5" /> 5 років гарантії</span>
             </h3>
             <div className="space-y-3.5 mb-6">
               {[
                 { label: 'Фурнітура:', value: currentHardware.price },
                 { label: 'Привід автоматики:', value: currentEngine.basePrice },
                 { label: `Зубчаста рейка (${railLength} м):`, value: railPrice },
-                ...((includeWifi && !isRotelli) ? [{ label: 'Смарт-модуль Wi-Fi:', value: 600 }] : []),
+                ...((includeWifi && !hasBuiltInWifi) ? [{ label: 'Смарт-модуль Wi-Fi:', value: 600 }] : []),
                 ...(includeSafety ? [{ label: 'Комплект безпеки:', value: 1500 }] : []),
               ].map((row, i) => (
                 <div key={i} className="flex justify-between text-sm">
