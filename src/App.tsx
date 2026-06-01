@@ -72,6 +72,69 @@ const HARDWARE_CATALOG = [
 // 🧩 ДОПОМІЖНІ КОМПОНЕНТИ
 // ============================================================
 
+function GateVisualizer({ width, weight }: { width: number, weight: number }) {
+  const widthPercent = 40 + ((width - 3) / 2.5) * 60;
+  
+  let textureClass = "bg-blue-300"; 
+  let borderClass = "border-blue-400";
+  let pattern = null;
+
+  if (weight === 500) {
+    textureClass = "bg-amber-700/80"; 
+    borderClass = "border-amber-900";
+    pattern = (
+      <div className="absolute inset-0 opacity-20 flex flex-col justify-evenly">
+        <div className="h-px bg-black w-full" />
+        <div className="h-px bg-black w-full" />
+        <div className="h-px bg-black w-full" />
+        <div className="h-px bg-black w-full" />
+      </div>
+    );
+  } else if (weight >= 800) {
+    textureClass = "bg-slate-800"; 
+    borderClass = "border-slate-950";
+    pattern = (
+      <div className="absolute inset-0 opacity-40 flex justify-evenly">
+        <div className="w-1 h-full bg-slate-900" />
+        <div className="w-1 h-full bg-slate-900" />
+        <div className="w-1 h-full bg-slate-900" />
+        <div className="w-1 h-full bg-slate-900" />
+        <div className="w-1 h-full bg-slate-900" />
+      </div>
+    );
+  } else {
+    pattern = (
+      <div className="absolute inset-0 opacity-10 flex justify-evenly">
+        <div className="w-0.5 h-full bg-black" />
+        <div className="w-0.5 h-full bg-black" />
+        <div className="w-0.5 h-full bg-black" />
+        <div className="w-0.5 h-full bg-black" />
+        <div className="w-0.5 h-full bg-black" />
+        <div className="w-0.5 h-full bg-black" />
+        <div className="w-0.5 h-full bg-black" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full h-32 bg-slate-100 rounded-xl border border-slate-200 flex flex-col justify-end p-4 relative overflow-hidden mb-8 shadow-inner">
+      <div className="absolute bottom-0 left-0 w-full h-6 bg-slate-200 border-t border-slate-300"></div>
+      <div className="absolute bottom-0 left-4 sm:left-8 w-6 h-28 bg-slate-300 border border-slate-400 rounded-t-sm z-10 flex flex-col items-center">
+         <div className="w-8 h-2 bg-slate-400 rounded-sm -mt-1 shadow-sm"></div>
+         <div className="mt-2 w-2 h-2 rounded-full bg-red-400 animate-pulse shadow-[0_0_8px_rgba(248,113,113,0.8)]"></div>
+      </div>
+      <div className="absolute bottom-0 right-4 sm:right-8 w-6 h-28 bg-slate-300 border border-slate-400 rounded-t-sm z-10 flex flex-col items-center">
+         <div className="w-8 h-2 bg-slate-400 rounded-sm -mt-1 shadow-sm"></div>
+      </div>
+      <div className="absolute bottom-6 left-10 sm:left-14 h-20 transition-all duration-500 ease-out z-0 flex" style={{ width: `${widthPercent}%`, maxWidth: 'calc(100% - 4rem)' }}>
+        <div className={`w-full h-full ${textureClass} ${borderClass} border-2 rounded-sm relative overflow-hidden transition-colors duration-500 shadow-sm`}>
+          {pattern}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function TrustBar() {
   const items = [
     { icon: <Award className="w-4 h-4 text-blue-400" />, text: '12 років на ринку' },
@@ -283,6 +346,27 @@ export default function App() {
   ]);
   const [userQuestion, setUserQuestion] = useState('');
 
+  // --- FOMO Соціальний доказ ---
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    const messages = [
+      "Олексій (Київ) щойно замовив Edinger S8",
+      "Цю сторінку зараз переглядають 4 людини",
+      "Залишилось 2 комплекти Rotelli по старій ціні",
+      "Іван (Львів) додав Miller Technics у кошик",
+      "Остання покупка: 14 хвилин тому"
+    ];
+    const showRandomToast = () => {
+      const msg = messages[Math.floor(Math.random() * messages.length)];
+      setToastMessage(msg);
+      setTimeout(() => setToastMessage(null), 5000);
+      setTimeout(showRandomToast, 15000 + Math.random() * 15000);
+    };
+    const initialTimer = setTimeout(showRandomToast, 10000);
+    return () => clearTimeout(initialTimer);
+  }, []);
+
   // --- Нова логіка фурнітури ---
   const getGuideRailLength = (width: number) => {
     if (width <= 3.5) return 5;
@@ -457,6 +541,7 @@ export default function App() {
             {step === 1 && (
               <div className="space-y-10 animate-fadeIn">
                 <div>
+                  <GateVisualizer width={gateWidth} weight={gateWeight} />
                   <label className="flex justify-between items-end mb-3 text-slate-600">
                     <span className="text-sm font-bold mb-1">Ширина в'їзду (метрів):</span>
                     <span className="text-blue-600 font-mono font-bold text-3xl leading-none">{gateWidth} <span className="text-lg">м</span></span>
@@ -473,17 +558,24 @@ export default function App() {
                   </div>
                 </div>
                 <div>
-                  <label className="flex justify-between items-end mb-3 text-slate-600">
-                    <span className="text-sm font-bold mb-1">Орієнтовна вага воріт:</span>
-                    <span className="text-blue-600 font-mono font-bold text-3xl leading-none">{gateWeight} <span className="text-lg">кг</span></span>
-                  </label>
-                  <input type="range" min="200" max="1000" step="50" value={gateWeight}
-                    aria-label="Орієнтовна вага воріт у кілограмах"
-                    onChange={(e) => setGateWeight(parseInt(e.target.value))}
-                    className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:bg-blue-600 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow-md hover:[&::-webkit-slider-thumb]:scale-110 [&::-webkit-slider-thumb]:transition-transform"
-                  />
-                  <div className="flex justify-between text-xs text-slate-400 mt-2 font-medium">
-                    <span>200 кг (Профнастил)</span><span>600 кг (Сендвіч-панель)</span><span>1000 кг (Ковка)</span>
+                  <h4 className="text-sm font-bold text-slate-600 mb-3">Орієнтовна вага воріт (матеріал):</h4>
+                  <div className="grid grid-cols-3 gap-2 sm:gap-3">
+                    {[
+                      { weight: 300, name: 'Легкі', sub: 'Профнастил, сітка' },
+                      { weight: 500, name: 'Середні', sub: 'Дерево, метал' },
+                      { weight: 800, name: 'Важкі', sub: 'Ковка, фільонка' },
+                    ].map(card => (
+                      <div key={card.weight} 
+                        onClick={() => setGateWeight(card.weight)}
+                        className={`border rounded-xl p-3 cursor-pointer transition-all text-center flex flex-col items-center justify-center ${
+                          gateWeight === card.weight 
+                          ? 'border-blue-600 bg-blue-50 ring-1 ring-blue-600 shadow-sm' 
+                          : 'border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300'
+                        }`}>
+                        <div className="font-bold text-slate-900 text-sm sm:text-base">{card.name}</div>
+                        <div className="text-[10px] sm:text-xs text-slate-500 mt-0.5">{card.sub}</div>
+                      </div>
+                    ))}
                   </div>
                 </div>
                 <ShimmerButton onClick={() => setStep(2)} className="w-full bg-blue-600 hover:bg-blue-700 py-4 px-4 shadow-md mt-6">
@@ -846,6 +938,13 @@ export default function App() {
             </form>
           </div>
         )}
+      </div>
+      {/* ====== FOMO TOAST ====== */}
+      <div className={`fixed bottom-24 md:bottom-6 left-4 z-50 transition-all duration-500 transform ${toastMessage ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0 pointer-events-none'}`}>
+        <div className="bg-slate-900/95 backdrop-blur-sm text-white px-4 py-3 rounded-xl shadow-2xl border border-slate-700 flex items-center gap-3 max-w-sm">
+          <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+          <p className="text-xs sm:text-sm font-medium leading-snug">{toastMessage}</p>
+        </div>
       </div>
 
     </div>
