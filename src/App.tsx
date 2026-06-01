@@ -273,16 +273,47 @@ export default function App() {
   ]);
   const [userQuestion, setUserQuestion] = useState('');
 
-  // --- Розрахунок вартості (без змін) ---
+  // --- Нова логіка фурнітури ---
+  const getGuideRailLength = (width: number) => {
+    if (width <= 3.5) return 5;
+    if (width <= 4.5) return 6;
+    return 7;
+  };
+
+  const guideRailLength = getGuideRailLength(gateWidth);
+
+  const getHardwarePrice = (id: string, railLength: number) => {
+    if (id === 'standart-3.6') {
+      if (railLength === 5) return 3450;
+      if (railLength === 6) return 3600;
+      return 3950;
+    }
+    if (id === 'gospodar-4.0') {
+      if (railLength === 5) return 4625;
+      if (railLength === 6) return 4925;
+      return 5325;
+    }
+    if (id === 'fayna-5.0') {
+      if (railLength <= 6) return 8857;
+      return 9807;
+    }
+    return 0;
+  };
+
+  const hardwarePrice = getHardwarePrice(selectedHardware, guideRailLength);
+
+  // --- Розрахунок вартості (оновлено) ---
   const currentHardware = HARDWARE_CATALOG.find(h => h.id === selectedHardware) || HARDWARE_CATALOG[0];
   const currentEngine = ENGINES_CATALOG.find(e => e.id === selectedEngine) || ENGINES_CATALOG[0];
-  const railLength = gateWidth + 1;
-  const railPrice = railLength * 350;
+  const toothRackLength = gateWidth + 1;
+  const toothRackPrice = toothRackLength * 350;
   
   const hasBuiltInWifi = currentEngine.id.includes('edinger') || currentEngine.id.includes('rotelli');
   const wifiPrice = (includeWifi && !hasBuiltInWifi) ? 600 : 0;
   const safetyPrice = includeSafety ? 1500 : 0;
-  const totalPrice = currentHardware.price + currentEngine.basePrice + railPrice + wifiPrice + safetyPrice;
+  const totalPrice = hardwarePrice + currentEngine.basePrice + toothRackPrice + wifiPrice + safetyPrice;
+  const retailPrice = Math.round(totalPrice * 1.15);
+  const totalSavings = retailPrice - totalPrice;
 
   // --- Фільтрація по вазі (матриця сумісності) ---
   const compatibleEngines = ENGINES_CATALOG.filter(e => e.maxWeight >= gateWeight);
@@ -416,15 +447,15 @@ export default function App() {
                     <span className="text-sm font-bold mb-1">Ширина в'їзду (метрів):</span>
                     <span className="text-blue-600 font-mono font-bold text-3xl leading-none">{gateWidth} <span className="text-lg">м</span></span>
                   </label>
-                  <input type="range" min="3" max="7" step="0.5" value={gateWidth}
+                  <input type="range" min="3" max="5.5" step="0.5" value={gateWidth}
                     aria-label="Ширина в'їзду в метрах"
                     onChange={(e) => setGateWidth(parseFloat(e.target.value))}
                     className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:bg-blue-600 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow-md hover:[&::-webkit-slider-thumb]:scale-110 [&::-webkit-slider-thumb]:transition-transform"
                   />
-                  <div className="flex justify-between text-xs text-slate-400 mt-2 font-medium"><span>3 м</span><span>5 м</span><span>7 м</span></div>
+                  <div className="flex justify-between text-xs text-slate-400 mt-2 font-medium"><span>3 м</span><span>4 м</span><span>5.5 м</span></div>
                   <div className="mt-4 text-sm text-blue-800 flex items-center gap-2 bg-blue-50 p-3 rounded-lg border border-blue-100">
                     <Info className="w-5 h-5 text-blue-600 shrink-0" />
-                    <span>Для противаги розраховано рельс довжиною <strong className="font-mono">{railLength} метрів</strong>.</span>
+                    <span>Фурнітура комплектується направляючим рельсом довжиною <strong className="font-mono">{guideRailLength} метрів</strong>.</span>
                   </div>
                 </div>
                 <div>
@@ -468,7 +499,7 @@ export default function App() {
                       }`}>
                       <div className="flex justify-between items-start mb-1">
                         <h4 className="font-bold text-slate-900 text-base">{hw.name}</h4>
-                        <span className="font-mono text-blue-600 font-bold text-base">{hw.price} ₴</span>
+                        <span className="font-mono text-blue-600 font-bold text-base">{getHardwarePrice(hw.id, guideRailLength)} ₴</span>
                       </div>
                       <p className="text-sm text-slate-600">{hw.desc}</p>
                       <div className="text-[11px] text-slate-500 font-mono mt-2 bg-slate-100 inline-block px-2 py-0.5 rounded">Товщина: {hw.thickness} | до {hw.maxWeight} кг</div>
@@ -596,9 +627,9 @@ export default function App() {
             </h3>
             <div className="space-y-3.5 mb-6">
               {[
-                { label: 'Фурнітура:', value: currentHardware.price },
+                { label: `Фурнітура ${currentHardware.name.split(' ')[2] || ''} (рельс ${guideRailLength} м):`, value: hardwarePrice },
                 { label: 'Привід автоматики:', value: currentEngine.basePrice },
-                { label: `Зубчаста рейка (${railLength} м):`, value: railPrice },
+                { label: `Зубчаста рейка (${toothRackLength} м):`, value: toothRackPrice },
                 ...((includeWifi && !hasBuiltInWifi) ? [{ label: 'Смарт-модуль Wi-Fi:', value: 600 }] : []),
                 ...(includeSafety ? [{ label: 'Комплект безпеки:', value: 1500 }] : []),
               ].map((row, i) => (
@@ -617,7 +648,7 @@ export default function App() {
               <div className="border-t border-slate-200 pt-4 flex flex-col gap-2">
                 <div className="flex justify-between items-center text-sm font-medium text-slate-500">
                   <span>Ціна в роздрібних магазинах:</span>
-                  <span className="line-through decoration-rose-500 decoration-2">{totalPrice + 1500} ₴</span>
+                  <span className="line-through decoration-rose-500 decoration-2">{retailPrice} ₴</span>
                 </div>
                 <div className="flex justify-between items-center bg-blue-50 p-4 rounded-xl border border-blue-100">
                   <span className="text-sm font-extrabold text-slate-900 leading-tight">Наша ціна<br/><span className="text-[10px] text-blue-600 uppercase tracking-wider font-bold block mt-0.5">пряма поставка зі складу</span></span>
@@ -625,7 +656,7 @@ export default function App() {
                 </div>
                 <div className="w-full flex justify-end">
                   <span className="text-emerald-700 font-bold bg-emerald-50 px-2.5 py-1.5 rounded-md border border-emerald-200 text-xs shadow-sm flex items-center gap-1.5 w-full justify-center">
-                    <CheckCircle2 className="w-3.5 h-3.5" /> Ви економите: 1 500 грн
+                    <CheckCircle2 className="w-3.5 h-3.5" /> Ви економите: {totalSavings} ₴
                   </span>
                 </div>
                 <div className="text-[11px] text-emerald-800 font-bold flex items-center gap-1.5 mt-0.5 bg-emerald-50 px-3 py-1.5 rounded-md border border-emerald-200 w-full justify-center shadow-sm">
