@@ -173,6 +173,28 @@ function YoutubeBlock() {
   );
 }
 
+function ReviewsBlock() {
+  return (
+    <section className="py-24 border-t border-slate-200 bg-white relative z-10">
+      <div className="max-w-6xl mx-auto px-4">
+        <h2 className="text-xl sm:text-2xl font-display font-extrabold text-slate-900 text-center mb-10">
+          Реальні відгуки клієнтів
+        </h2>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="bg-slate-50 border border-slate-200 p-2 sm:p-3 rounded-2xl shadow-sm hover:shadow-md transition-all group cursor-pointer">
+              <div className="w-full aspect-[9/16] bg-slate-200 rounded-xl flex flex-col items-center justify-center text-slate-400 group-hover:bg-slate-300 transition-colors">
+                <Camera className="w-6 h-6 sm:w-8 sm:h-8 mb-2 opacity-50" />
+                <span className="text-[9px] sm:text-[10px] uppercase tracking-wider font-bold text-center px-2">Скріншот {i}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function AiPromoBanner({ onOpen }: { onOpen: () => void }) {
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
@@ -579,20 +601,21 @@ export default function App() {
               </div>
               
               {/* Маркетинг: Триггер срочности и скидка */}
-              <div className="border-t border-slate-200 pt-4 flex flex-col gap-1 items-end">
-                <span className="text-sm font-medium text-slate-500 line-through decoration-rose-500 decoration-2">
-                  {totalPrice + 1500} ₴
-                </span>
-                <div className="flex justify-between items-baseline w-full">
-                  <span className="text-base font-extrabold text-slate-900">Разом:</span>
-                  <span className="text-3xl font-black font-mono text-blue-600">{totalPrice} ₴</span>
+              <div className="border-t border-slate-200 pt-4 flex flex-col gap-2">
+                <div className="flex justify-between items-center text-sm font-medium text-slate-500">
+                  <span>Ціна в роздрібних магазинах:</span>
+                  <span className="line-through decoration-rose-500 decoration-2">{totalPrice + 1500} ₴</span>
                 </div>
-                <div className="w-full flex justify-end mt-1">
-                  <span className="text-emerald-700 font-bold bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200 text-xs shadow-sm">
-                    Ви економите 1500 ₴
+                <div className="flex justify-between items-center bg-blue-50 p-4 rounded-xl border border-blue-100">
+                  <span className="text-sm font-extrabold text-slate-900 leading-tight">Наша ціна<br/><span className="text-[10px] text-blue-600 uppercase tracking-wider font-bold block mt-0.5">пряма поставка зі складу</span></span>
+                  <span className="text-2xl sm:text-3xl font-black font-mono text-blue-600">{totalPrice} ₴</span>
+                </div>
+                <div className="w-full flex justify-end">
+                  <span className="text-emerald-700 font-bold bg-emerald-50 px-2.5 py-1.5 rounded-md border border-emerald-200 text-xs shadow-sm flex items-center gap-1.5 w-full justify-center">
+                    <CheckCircle2 className="w-3.5 h-3.5" /> Ви економите: 1 500 грн
                   </span>
                 </div>
-                <div className="text-[11px] text-emerald-800 font-bold flex items-center gap-1.5 mt-1.5 bg-emerald-50 px-3 py-1.5 rounded-md border border-emerald-200 w-full justify-center shadow-sm">
+                <div className="text-[11px] text-emerald-800 font-bold flex items-center gap-1.5 mt-0.5 bg-emerald-50 px-3 py-1.5 rounded-md border border-emerald-200 w-full justify-center shadow-sm">
                   <Timer className="w-4 h-4 animate-pulse text-emerald-600" /> Ціна зафіксована на 48 годин
                 </div>
               </div>
@@ -645,6 +668,9 @@ export default function App() {
       <div className="relative z-10">
         <YoutubeBlock />
       </div>
+
+      {/* ====== ВІДГУКИ (Світлий блок) ====== */}
+      <ReviewsBlock />
 
       {/* ====== ЧОМУ 95% ЛАМАЮТЬСЯ (Темний блок) ====== */}
       <section className="py-24 border-t border-slate-800 bg-slate-900 relative z-10">
