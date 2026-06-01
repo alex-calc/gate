@@ -14,9 +14,33 @@ import {
 // ============================================================
 
 const ENGINES_CATALOG = [
-  { id: 'edinger-s6', name: 'Edinger S6', maxWeight: 600, power: '350W', gears: 'Металл', price: 7500, desc: 'Ідеально для побутових воріт до 4 метрів. Сталевий редуктор.' },
-  { id: 'miller-mt800', name: 'Miller Technics 800', maxWeight: 800, power: '400W', gears: 'Латунь/Сталь', price: 11200, desc: 'Преміум-клас. Надійний двигун для важких воріт.' },
-  { id: 'rotelli-premium', name: 'Rotelli Premium 1100', maxWeight: 1100, power: '500W', gears: 'Сталь', price: 13500, desc: 'Промисловий запас міцності для масивних конструкцій.' }
+  {
+    id: 'edinger-s6',
+    name: 'Edinger S6',
+    tag: 'ТОП ЦІНА/ЯКІСТЬ',
+    description: 'Ідеально для побутових воріт до 4-5 метрів. Сталевий редуктор.',
+    specs: ['350W', 'Метал', 'до 600 кг'],
+    basePrice: 7500,
+    maxWeight: 600
+  },
+  {
+    id: 'miller-technics-800',
+    name: 'Miller Technics 800',
+    tag: 'ВИБІР ЕКСПЕРТІВ',
+    description: 'Преміум-клас. Надійний двигун з масивним металевим редуктором для важких умов.',
+    specs: ['400W', 'Латунь/Сталь', 'до 800 кг'],
+    basePrice: 14999,
+    maxWeight: 800
+  },
+  {
+    id: 'rotelli-sl1100',
+    name: 'Rotelli Premium SL 1100 Wi-Fi',
+    tag: 'ЄВРОПЕЙСЬКИЙ ПРЕМІУМ',
+    description: 'Промисловий запас міцності та вбудоване керування з телефона в комплекті.',
+    specs: ['500W', 'Сталь', 'до 1100 кг'],
+    basePrice: 14480,
+    maxWeight: 1100
+  }
 ];
 
 const HARDWARE_CATALOG = [
@@ -221,11 +245,13 @@ export default function App() {
   // --- Розрахунок вартості (без змін) ---
   const currentHardware = HARDWARE_CATALOG.find(h => h.id === selectedHardware) || HARDWARE_CATALOG[0];
   const currentEngine = ENGINES_CATALOG.find(e => e.id === selectedEngine) || ENGINES_CATALOG[0];
-  const railLength = Math.ceil(gateWidth * 1.5);
+  const railLength = gateWidth + 1;
   const railPrice = railLength * 350;
-  const wifiPrice = includeWifi ? 600 : 0;
+  
+  const isRotelli = currentEngine.id === 'rotelli-sl1100';
+  const wifiPrice = (includeWifi && !isRotelli) ? 600 : 0;
   const safetyPrice = includeSafety ? 1500 : 0;
-  const totalPrice = currentHardware.price + currentEngine.price + railPrice + wifiPrice + safetyPrice;
+  const totalPrice = currentHardware.price + currentEngine.basePrice + railPrice + wifiPrice + safetyPrice;
 
   // --- Фільтрація по вазі (матриця сумісності) ---
   const compatibleEngines = ENGINES_CATALOG.filter(e => e.maxWeight >= gateWeight);
@@ -463,18 +489,15 @@ export default function App() {
                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-2 gap-1.5">
                           <h4 className="font-bold text-slate-900 text-base flex flex-wrap items-center gap-2">
                             {engine.name}
-                            {engine.id === 'edinger-s6' && (
-                              <span className="bg-blue-100 text-blue-700 text-[10px] px-2 py-0.5 rounded border border-blue-200 font-mono whitespace-nowrap font-bold">ТОП ЦІНА/ЯКІСТЬ</span>
-                            )}
-                            {(engine.id === 'miller-mt800' || engine.id === 'rotelli-premium') && (
-                              <span className="bg-emerald-100 text-emerald-700 text-[10px] px-2 py-0.5 rounded border border-emerald-200 font-mono whitespace-nowrap font-bold">🇮🇹 MADE IN ITALY</span>
+                            {engine.tag && (
+                              <span className="bg-blue-100 text-blue-700 text-[10px] px-2 py-0.5 rounded border border-blue-200 font-mono whitespace-nowrap font-bold">{engine.tag}</span>
                             )}
                           </h4>
-                          <span className="font-mono text-blue-600 font-bold text-base sm:text-lg whitespace-nowrap">{engine.price} ₴</span>
+                          <span className="font-mono text-blue-600 font-bold text-base sm:text-lg whitespace-nowrap">{engine.basePrice} ₴</span>
                         </div>
-                        <p className="text-sm text-slate-600 leading-relaxed">{engine.desc}</p>
+                        <p className="text-sm text-slate-600 leading-relaxed">{engine.description}</p>
                         <div className="text-[11px] text-slate-500 font-mono mt-2.5 bg-slate-100 inline-block px-2.5 py-1 rounded-md border border-slate-200">
-                          {engine.power} | {engine.gears} | до {engine.maxWeight} кг
+                          {engine.specs.join(' | ')}
                         </div>
                       </div>
                     </div>
@@ -485,12 +508,28 @@ export default function App() {
                 <div className="border-t border-slate-200 pt-5 space-y-3">
                   <h4 className="text-sm font-bold text-slate-900 mb-2">Додаткові модулі:</h4>
                   {[
-                    { state: includeWifi, setter: setIncludeWifi, label: 'Управління зі смартфона (Wi-Fi/GSM)', sub: 'Відкривайте ворота додатком з будь-якої точки', price: '+600 ₴', badge: 'ХІТ' },
-                    { state: includeSafety, setter: setIncludeSafety, label: 'Комплект безпеки (Фотоелементи + Лампа)', sub: 'Зупинить ворота якщо у прорізі зʼявиться людина або авто', price: '+1 500 ₴', badge: null },
+                    { 
+                      state: isRotelli ? true : includeWifi, 
+                      setter: setIncludeWifi, 
+                      label: 'Управління зі смартфона (Wi-Fi/GSM)', 
+                      sub: 'Відкривайте ворота додатком з будь-якої точки', 
+                      price: isRotelli ? 'Включено' : '+600 ₴', 
+                      badge: 'ХІТ',
+                      disabled: isRotelli
+                    },
+                    { 
+                      state: includeSafety, 
+                      setter: setIncludeSafety, 
+                      label: 'Комплект безпеки (Фотоелементи + Лампа)', 
+                      sub: 'Зупинить ворота якщо у прорізі зʼявиться людина або авто', 
+                      price: '+1 500 ₴', 
+                      badge: null,
+                      disabled: false
+                    },
                   ].map((opt, i) => (
-                    <label key={i} className="flex items-center justify-between p-4 bg-white rounded-xl border border-slate-200 cursor-pointer hover:border-slate-300 hover:bg-slate-50 shadow-sm select-none transition-all">
+                    <label key={i} className={`flex items-center justify-between p-4 bg-white rounded-xl border border-slate-200 hover:border-slate-300 hover:bg-slate-50 shadow-sm select-none transition-all ${opt.disabled ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer'}`}>
                       <div className="flex items-center gap-3">
-                        <input type="checkbox" checked={opt.state} onChange={(e) => opt.setter(e.target.checked)}
+                        <input type="checkbox" checked={opt.state} onChange={(e) => !opt.disabled && opt.setter(e.target.checked)} disabled={opt.disabled}
                           className="w-5 h-5 rounded accent-blue-600" />
                         <div>
                           <div className="text-sm font-bold text-slate-900 flex items-center gap-2">
@@ -523,9 +562,9 @@ export default function App() {
             <div className="space-y-3.5 mb-6">
               {[
                 { label: 'Фурнітура:', value: currentHardware.price },
-                { label: 'Привід автоматики:', value: currentEngine.price },
+                { label: 'Привід автоматики:', value: currentEngine.basePrice },
                 { label: `Зубчаста рейка (${railLength} м):`, value: railPrice },
-                ...(includeWifi ? [{ label: 'Смарт-модуль Wi-Fi:', value: 600 }] : []),
+                ...((includeWifi && !isRotelli) ? [{ label: 'Смарт-модуль Wi-Fi:', value: 600 }] : []),
                 ...(includeSafety ? [{ label: 'Комплект безпеки:', value: 1500 }] : []),
               ].map((row, i) => (
                 <div key={i} className="flex justify-between text-sm">
@@ -533,6 +572,11 @@ export default function App() {
                   <span className="text-slate-900 font-mono font-bold">{row.value} ₴</span>
                 </div>
               ))}
+
+              <div className="flex justify-between text-sm mt-3 pt-3 border-t border-slate-100">
+                <span className="text-slate-600 font-medium">Доставка:</span>
+                <span className="text-slate-900 font-medium text-right">за тарифами перевізника<br/><span className="text-slate-400 text-xs">(орієнтовно 1100–1300 ₴)</span></span>
+              </div>
               
               {/* Маркетинг: Триггер срочности и скидка */}
               <div className="border-t border-slate-200 pt-4 flex flex-col gap-1 items-end">
