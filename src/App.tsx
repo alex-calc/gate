@@ -49,13 +49,23 @@ const ENGINES_CATALOG = [
     specs: ['500W', 'Сталь', 'до 1100 кг'],
     basePrice: 14480,
     maxWeight: 1100
+  },
+  {
+    id: 'no-engine',
+    name: 'Автоматика не потрібна (тільки фурнітура)',
+    tag: '',
+    description: 'Я планую відкривати ворота вручну',
+    specs: ['-', '-', '-'],
+    basePrice: 0,
+    maxWeight: 9999
   }
 ];
 
 const HARDWARE_CATALOG = [
   { id: 'standart-3.6', name: 'Novi Vorota Standart (3.6 мм)', maxWeight: 500, thickness: '3.6 мм', price: 3925, desc: 'Для легких воріт з профнастилу.' },
   { id: 'gospodar-4.0', name: 'Novi Vorota Gospodar (4.0 мм)', maxWeight: 500, thickness: '4.0 мм', price: 4525, desc: 'Посилений направляючий рельс для довговічності.' },
-  { id: 'fayna-5.0', name: 'Novi Vorota Fayna (5.0 мм)', maxWeight: 800, thickness: '5.0 мм', price: 8757, desc: 'Для важких кованих або широких воріт.' }
+  { id: 'fayna-5.0', name: 'Novi Vorota Fayna (5.0 мм)', maxWeight: 800, thickness: '5.0 мм', price: 8757, desc: 'Для важких кованих або широких воріт.' },
+  { id: 'no-hardware', name: 'Фурнітура не потрібна (тільки автоматика)', maxWeight: 9999, thickness: '-', price: 0, desc: 'Я вже маю фурнітуру' }
 ];
 
 // ============================================================
@@ -305,12 +315,16 @@ export default function App() {
   // --- Розрахунок вартості (оновлено) ---
   const currentHardware = HARDWARE_CATALOG.find(h => h.id === selectedHardware) || HARDWARE_CATALOG[0];
   const currentEngine = ENGINES_CATALOG.find(e => e.id === selectedEngine) || ENGINES_CATALOG[0];
+  
+  const isNoHardware = currentHardware.id === 'no-hardware';
+  const isNoEngine = currentEngine.id === 'no-engine';
+
   const toothRackLength = gateWidth + 1;
-  const toothRackPrice = toothRackLength * 350;
+  const toothRackPrice = isNoEngine ? 0 : toothRackLength * 350;
   
   const hasBuiltInWifi = currentEngine.id.includes('edinger') || currentEngine.id.includes('rotelli');
-  const wifiPrice = (includeWifi && !hasBuiltInWifi) ? 600 : 0;
-  const safetyPrice = includeSafety ? 1500 : 0;
+  const wifiPrice = (includeWifi && !hasBuiltInWifi && !isNoEngine) ? 600 : 0;
+  const safetyPrice = (includeSafety && !isNoEngine) ? 1500 : 0;
   const totalPrice = hardwarePrice + currentEngine.basePrice + toothRackPrice + wifiPrice + safetyPrice;
   const retailPrice = Math.round(totalPrice * 1.15);
   const totalSavings = retailPrice - totalPrice;
@@ -573,22 +587,22 @@ export default function App() {
                   <h4 className="text-sm font-bold text-slate-900 mb-2">Додаткові модулі:</h4>
                   {[
                     { 
-                      state: hasBuiltInWifi ? true : includeWifi, 
+                      state: hasBuiltInWifi && !isNoEngine ? true : (includeWifi && !isNoEngine), 
                       setter: setIncludeWifi, 
                       label: 'Управління зі смартфона (Wi-Fi/GSM)', 
                       sub: hasBuiltInWifi ? 'Вбудований Wi-Fi модуль! Керуйте воротами зі смартфона (до 10 користувачів безкоштовно)' : 'Відкривайте ворота додатком з будь-якої точки', 
                       price: hasBuiltInWifi ? 'Вбудовано' : '+600 ₴', 
                       badge: hasBuiltInWifi ? 'БЕЗКОШТОВНО' : 'ХІТ',
-                      disabled: hasBuiltInWifi
+                      disabled: hasBuiltInWifi || isNoEngine
                     },
                     { 
-                      state: includeSafety, 
+                      state: includeSafety && !isNoEngine, 
                       setter: setIncludeSafety, 
                       label: 'Комплект безпеки (Фотоелементи + Лампа)', 
                       sub: 'Зупинить ворота якщо у прорізі зʼявиться людина або авто', 
                       price: '+1 500 ₴', 
                       badge: null,
-                      disabled: false
+                      disabled: isNoEngine
                     },
                   ].map((opt, i) => (
                     <label key={i} className={`flex items-center justify-between p-4 bg-white rounded-xl border border-slate-200 hover:border-slate-300 hover:bg-slate-50 shadow-sm select-none transition-all ${opt.disabled ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer'}`}>
@@ -627,15 +641,15 @@ export default function App() {
             </h3>
             <div className="space-y-3.5 mb-6">
               {[
-                { label: `Фурнітура ${currentHardware.name.split(' ')[2] || ''} (рельс ${guideRailLength} м):`, value: hardwarePrice },
-                { label: 'Привід автоматики:', value: currentEngine.basePrice },
-                { label: `Зубчаста рейка (${toothRackLength} м):`, value: toothRackPrice },
-                ...((includeWifi && !hasBuiltInWifi) ? [{ label: 'Смарт-модуль Wi-Fi:', value: 600 }] : []),
-                ...(includeSafety ? [{ label: 'Комплект безпеки:', value: 1500 }] : []),
+                { label: isNoHardware ? 'Фурнітура:' : `Фурнітура ${currentHardware.name.split(' ')[2] || ''} (рельс ${guideRailLength} м):`, value: isNoHardware ? 'Не потрібна (0 ₴)' : hardwarePrice },
+                { label: 'Привід автоматики:', value: isNoEngine ? 'Не потрібен (0 ₴)' : currentEngine.basePrice },
+                { label: isNoEngine ? 'Зубчаста рейка:' : `Зубчаста рейка (${toothRackLength} м):`, value: isNoEngine ? 'Не потрібна (0 ₴)' : toothRackPrice },
+                ...((includeWifi && !hasBuiltInWifi && !isNoEngine) ? [{ label: 'Смарт-модуль Wi-Fi:', value: 600 }] : []),
+                ...(includeSafety && !isNoEngine ? [{ label: 'Комплект безпеки:', value: 1500 }] : []),
               ].map((row, i) => (
                 <div key={i} className="flex justify-between text-sm">
                   <span className="text-slate-600 font-medium">{row.label}</span>
-                  <span className="text-slate-900 font-mono font-bold">{row.value} ₴</span>
+                  <span className="text-slate-900 font-mono font-bold">{typeof row.value === 'number' ? `${row.value} ₴` : row.value}</span>
                 </div>
               ))}
 
