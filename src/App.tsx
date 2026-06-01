@@ -408,6 +408,7 @@ export default function App() {
                     <span className="text-blue-600 font-mono font-bold text-3xl leading-none">{gateWidth} <span className="text-lg">м</span></span>
                   </label>
                   <input type="range" min="3" max="7" step="0.5" value={gateWidth}
+                    aria-label="Ширина в'їзду в метрах"
                     onChange={(e) => setGateWidth(parseFloat(e.target.value))}
                     className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:bg-blue-600 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow-md hover:[&::-webkit-slider-thumb]:scale-110 [&::-webkit-slider-thumb]:transition-transform"
                   />
@@ -423,6 +424,7 @@ export default function App() {
                     <span className="text-blue-600 font-mono font-bold text-3xl leading-none">{gateWeight} <span className="text-lg">кг</span></span>
                   </label>
                   <input type="range" min="200" max="1000" step="50" value={gateWeight}
+                    aria-label="Орієнтовна вага воріт у кілограмах"
                     onChange={(e) => setGateWeight(parseInt(e.target.value))}
                     className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:bg-blue-600 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow-md hover:[&::-webkit-slider-thumb]:scale-110 [&::-webkit-slider-thumb]:transition-transform"
                   />
@@ -552,7 +554,8 @@ export default function App() {
                     <label key={i} className={`flex items-center justify-between p-4 bg-white rounded-xl border border-slate-200 hover:border-slate-300 hover:bg-slate-50 shadow-sm select-none transition-all ${opt.disabled ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer'}`}>
                       <div className="flex items-center gap-3">
                         <input type="checkbox" checked={opt.state} onChange={(e) => !opt.disabled && opt.setter(e.target.checked)} disabled={opt.disabled}
-                          className="w-5 h-5 rounded accent-blue-600" />
+                          aria-label={opt.label}
+                          className="w-5 h-5 rounded accent-blue-600 focus:ring-2 focus:ring-blue-600 focus:outline-none" />
                         <div>
                           <div className="text-sm font-bold text-slate-900 flex items-center gap-2">
                             {opt.label}
