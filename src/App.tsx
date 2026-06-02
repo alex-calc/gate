@@ -6,7 +6,7 @@ import { ShimmerButton } from './components/ui/shimmer-button';
 import {
   ShieldCheck, Wrench, Cpu, Sparkles, Phone,
   CheckCircle2, ChevronRight, Info, ArrowRight,
-  Clock, Truck, Video, Star, Award, Zap, Timer, Camera
+  Clock, Truck, Video, Star, Award, Zap, Timer, Camera, Gift
 } from 'lucide-react';
 
 // ============================================================
@@ -691,8 +691,16 @@ export default function App() {
                           <span className="font-mono text-blue-600 font-bold text-base sm:text-lg whitespace-nowrap">{engine.basePrice} ₴</span>
                         </div>
                         <p className="text-sm text-slate-600 leading-relaxed">{engine.description}</p>
-                        <div className="text-[11px] text-slate-500 font-mono mt-2.5 bg-slate-100 inline-block px-2.5 py-1 rounded-md border border-slate-200">
-                          {engine.specs.join(' | ')}
+                        <div className="flex flex-wrap gap-2 mt-2.5">
+                          <div className="text-[11px] text-slate-500 font-mono bg-slate-100 inline-block px-2.5 py-1 rounded-md border border-slate-200">
+                            {engine.specs.join(' | ')}
+                          </div>
+                          {!engine.id.includes('no-engine') && (
+                            <div className="text-[11px] text-emerald-800 font-bold flex items-center gap-1 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200 shadow-sm">
+                              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" /> 
+                              {engine.id.includes('miller') ? 'Металеві шестерні (Латунь/Сталь)' : '100% метал редуктора'}
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -813,9 +821,9 @@ export default function App() {
                 </div>
                 
                 {/* Маркетинг: Лид-магнит */}
-                <div className="text-[11px] text-slate-700 bg-blue-50 p-3 rounded-lg border border-blue-100 flex gap-2.5 items-start leading-relaxed font-medium">
-                  <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
-                  <span>За вашим номером фіксується <strong>безкоштовне індивідуальне креслення</strong>. <span className="text-amber-700 font-extrabold block mt-1">+ Подарунок: PDF-інструкція по зварюванню каркасу</span></span>
+                <div className="text-[13px] text-slate-800 bg-amber-50 p-3.5 rounded-xl border border-amber-200 flex gap-2.5 items-start leading-relaxed font-medium mb-2 shadow-sm">
+                  <Gift className="w-5 h-5 text-amber-600 shrink-0 mt-0.5 animate-bounce" />
+                  <span><strong>+ ПОДАРУНОК:</strong> Безкоштовне індивідуальне креслення під ваші розміри та PDF-інструкція з монтажу воріт!</span>
                 </div>
 
                 <button type="submit"
