@@ -8,6 +8,7 @@ import {
   CheckCircle2, ChevronRight, Info, ArrowRight,
   Clock, Truck, Video, Star, Award, Zap, Timer, Camera, Gift
 } from 'lucide-react';
+import { AIChatWidget } from './components/AIChatWidget';
 
 // ============================================================
 // 📦 БАЗА ДАННЫХ — каталог без изменений
@@ -366,10 +367,6 @@ export default function App() {
 
   // --- AI Чат ---
   const [chatOpen, setChatOpen] = useState(false);
-  const [chatMessages, setChatMessages] = useState([
-    { role: 'assistant', text: 'Привіт! Я твій інженер-консультант. Допоможу підібрати автоматику без переплат. Які ворота плануєте ставити?' }
-  ]);
-  const [userQuestion, setUserQuestion] = useState('');
 
   // --- FOMO Соціальний доказ ---
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -494,22 +491,6 @@ export default function App() {
     setIsSubmitted(true);
   };
 
-  const askAi = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!userQuestion.trim()) return;
-    const newMessages = [...chatMessages, { role: 'user', text: userQuestion }];
-    setChatMessages(newMessages);
-    setUserQuestion('');
-    setTimeout(() => {
-      let aiResponse = "Гарне питання! Для ваших параметрів краще за все підійде конфігурація з металевим редуктором. Зверніть увагу на блоки автоматики з Wi-Fi — це лише +600 грн до кошторису.";
-      if (userQuestion.toLowerCase().includes('ціна') || userQuestion.toLowerCase().includes('сколько')) {
-        aiResponse = `За вашим розрахунком повний комплект виходить ${totalPrice} грн. Ціни актуальні, від офіційного постачальника!`;
-      } else if (userQuestion.toLowerCase().includes('вага') || userQuestion.toLowerCase().includes('вес')) {
-        aiResponse = `При вазі воріт ${gateWeight} кг автоматика повинна мати запас 1.5-2х. Мотор ${currentEngine.name} розрахований до ${currentEngine.maxWeight} кг — впорається навіть у сильний вітер.`;
-      }
-      setChatMessages([...newMessages, { role: 'assistant', text: aiResponse }]);
-    }, 800);
-  };
 
   const scrollToCheckout = () => {
     document.getElementById('checkout-form')?.scrollIntoView({ behavior: 'smooth' });
@@ -995,49 +976,13 @@ export default function App() {
       )}
 
       {/* ====== FLOATING AI ЧАТ ====== */}
-      <div className={`fixed right-4 sm:right-6 z-50 transition-all ${isSubmitted ? 'bottom-6' : 'bottom-24 md:bottom-6'}`}>
-        {!chatOpen ? (
-          <button onClick={() => setChatOpen(true)}
-            className="relative bg-blue-600 hover:bg-blue-700 text-white rounded-full p-4 shadow-xl flex items-center gap-2 group transition-all duration-300 hover:scale-105">
-            <span className="absolute inset-0 rounded-full bg-blue-600 animate-ping opacity-30" />
-            <Sparkles className="w-5 h-5 relative z-10" />
-            <span className="hidden sm:inline relative z-10 max-w-0 overflow-hidden group-hover:max-w-md transition-all duration-300 ease-out text-sm font-bold whitespace-nowrap pl-1">
-              💬 Потрібна допомога? AI підбере комплект за 1 хвилину
-            </span>
-          </button>
-        ) : (
-          <div className="bg-white border border-slate-200 w-80 sm:w-96 h-[440px] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
-            <div className="bg-blue-600 px-4 py-3 flex justify-between items-center">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-emerald-400 rounded-full animate-ping" />
-                <span className="text-xs font-bold text-white">Інженер-Консультант (AI)</span>
-              </div>
-              <button onClick={() => setChatOpen(false)} className="text-white/70 hover:text-white text-xs font-mono bg-blue-700 hover:bg-blue-800 w-6 h-6 rounded-full flex items-center justify-center transition-colors">✕</button>
-            </div>
-            <div className="flex-1 p-4 overflow-y-auto space-y-3 text-xs bg-slate-50">
-              {chatMessages.map((msg, i) => (
-                <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`max-w-[85%] px-3.5 py-2.5 rounded-xl leading-relaxed shadow-sm ${
-                    msg.role === 'user'
-                      ? 'bg-blue-600 text-white rounded-tr-none font-medium'
-                      : 'bg-white border border-slate-200 text-slate-700 rounded-tl-none font-medium'
-                  }`}>
-                    {msg.text}
-                  </div>
-                </div>
-              ))}
-            </div>
-            <form onSubmit={askAi} className="p-3 bg-white border-t border-slate-200 flex gap-2">
-              <input type="text" placeholder="Запитати про монтаж, редуктор, вагу..."
-                value={userQuestion} onChange={(e) => setUserQuestion(e.target.value)}
-                className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 font-medium focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all placeholder:text-slate-400" />
-              <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-1.5 rounded-xl transition-all text-xs shadow-sm active:scale-95">
-                ОК
-              </button>
-            </form>
-          </div>
-        )}
-      </div>
+      <AIChatWidget 
+        calculatorState={{ gateWidth, gateWeight, selectedEngine, selectedHardware }} 
+        isSubmitted={isSubmitted} 
+        isOpen={chatOpen}
+        onOpen={() => setChatOpen(true)}
+        onClose={() => setChatOpen(false)}
+      />
       {/* ====== FOMO TOAST ====== */}
       <div className={`fixed bottom-24 md:bottom-6 left-4 z-50 transition-all duration-500 transform ${toastMessage ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0 pointer-events-none'}`}>
         <div className="bg-slate-900/95 backdrop-blur-sm text-white px-4 py-3 rounded-xl shadow-2xl border border-slate-700 flex items-center gap-3 max-w-sm">
