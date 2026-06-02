@@ -448,9 +448,49 @@ export default function App() {
     if (input.length <= 9) setPhoneNumber(input);
   };
 
-  const submitOrder = (e: React.FormEvent) => {
+  const submitOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     if (phoneNumber.length < 9) return alert('Будь ласка, введіть коректний номер телефону');
+    
+    // Telegram Integration
+    const botToken = import.meta.env.VITE_TELEGRAM_BOT_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN';
+    const chatId = import.meta.env.VITE_TELEGRAM_CHAT_ID || 'YOUR_TELEGRAM_CHAT_ID';
+
+    const selectedWeightCategory = gateWeight === 300 ? 'Легкі (Профнастил, сітка)' : gateWeight === 500 ? 'Середні (Дерево, метал)' : 'Важкі (Ковка, фільонка)';
+    const wifiStatus = hasBuiltInWifi && !isNoEngine ? 'Вбудовано (0 ₴)' : includeWifi && !isNoEngine ? 'Так (600 ₴)' : 'Ні';
+    const safetyStatus = includeSafety && !isNoEngine ? 'Так (1500 ₴)' : 'Ні';
+    
+    const text = `🚀 НОВИЙ ЛІД З КАЛЬКУЛЯТОРА ВОРІТ
+👤 Ім'я: ${clientName || 'Не вказано'}
+📞 Телефон: +380${phoneNumber}
+---
+📐 Параметри воріт:
+- Ширина: ${gateWidth} м
+- Вага/Матеріал: ${selectedWeightCategory}
+---
+📦 Комплектація:
+- Фурнітура: ${currentHardware.name} (${hardwarePrice} ₴)
+- Автоматика: ${currentEngine.name} (${currentEngine.basePrice} ₴)
+- Зубчаста рейка: ${toothRackLength} м (${toothRackPrice} ₴)
+- Доп. модулі: Wi-Fi (${wifiStatus}), Безпека (${safetyStatus})
+---
+💰 РАЗОМ (Наша ціна): ${totalPrice} ₴
+🏪 Роздрібна ціна: ${retailPrice} ₴`;
+
+    try {
+      if (botToken !== 'YOUR_TELEGRAM_BOT_TOKEN') {
+        await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: chatId, text: text })
+        });
+      } else {
+        console.log("Mock Telegram Send:\n", text);
+      }
+    } catch (error) {
+      console.error('Telegram error', error);
+    }
+
     setIsSubmitted(true);
   };
 
@@ -832,10 +872,36 @@ export default function App() {
                 </button>
               </form>
             ) : (
-              <div className="bg-emerald-50 border border-emerald-200 p-5 rounded-xl text-center text-xs text-emerald-800">
-                <CheckCircle2 className="w-10 h-10 mx-auto mb-3 text-emerald-600" />
-                <h4 className="font-extrabold text-base mb-1 text-emerald-900">Запит успішно надіслано!</h4>
-                <p className="font-medium mt-2">Інженер готує креслення під ваші ворота ({gateWidth}м) та бонусний PDF. Очікуйте дзвінка найближчим часом.</p>
+              <div className="bg-emerald-50 border border-emerald-200 p-5 sm:p-6 rounded-2xl shadow-xl text-center text-sm text-emerald-900 relative overflow-hidden animate-fadeIn">
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-400 to-emerald-600"></div>
+                <CheckCircle2 className="w-12 h-12 mx-auto mb-4 text-emerald-500 bg-white rounded-full p-1 shadow-sm" />
+                <h4 className="font-extrabold text-xl sm:text-2xl mb-2 text-emerald-900">Дякуємо! Ваша заявка прийнята.</h4>
+                <p className="font-medium mt-2 text-emerald-800/80 mb-6">Менеджер вже готує індивідуальне креслення та PDF-інструкцію!</p>
+                
+                <div className="bg-white rounded-xl p-4 text-left shadow-sm border border-emerald-100">
+                  <h5 className="font-bold text-slate-800 mb-3 flex items-center gap-2 border-b border-slate-100 pb-2">
+                    <CheckCircle2 className="w-4 h-4 text-blue-600" /> Ваш розрахунок:
+                  </h5>
+                  <div className="space-y-2.5 text-xs sm:text-sm text-slate-600">
+                    <div className="flex justify-between items-center">
+                      <span>Ширина воріт:</span> <strong className="text-slate-900">{gateWidth} м</strong>
+                    </div>
+                    <div className="flex justify-between items-center gap-4">
+                      <span>Фурнітура:</span> <strong className="text-slate-900 truncate max-w-[60%] text-right">{currentHardware.name}</strong>
+                    </div>
+                    <div className="flex justify-between items-center gap-4">
+                      <span>Автоматика:</span> <strong className="text-slate-900 truncate max-w-[60%] text-right">{currentEngine.name}</strong>
+                    </div>
+                    {!isNoEngine && (
+                      <div className="flex justify-between items-center">
+                        <span>Довжина рейки:</span> <strong className="text-slate-900">{toothRackLength} м</strong>
+                      </div>
+                    )}
+                    <div className="flex justify-between items-center mt-3 pt-3 border-t border-slate-100 font-bold text-sm sm:text-base">
+                      <span>Всього до сплати:</span> <span className="text-blue-600 font-mono">{totalPrice} ₴</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
           </div>
