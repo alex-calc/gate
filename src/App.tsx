@@ -16,39 +16,63 @@ import {
 const ENGINES_CATALOG = [
   {
     id: 'edinger-s8',
-    name: 'Edinger S8',
+    name: 'Edinger S8 (вбудований Wi-Fi)',
     tag: 'ХІТ ПРОДАЖУ',
     description: 'Оптимальний вибір для побутових воріт до 5 метрів. Сталевий редуктор та вбудований Wi-Fi.',
     specs: ['400W', 'Метал', 'до 800 кг'],
-    basePrice: 8500,
-    maxWeight: 800
+    basePrice: 9861,
+    maxWeight: 800,
+    minWeight: 0
   },
   {
     id: 'edinger-i10',
-    name: 'Edinger I10',
+    name: 'Edinger I10 (вбудований Wi-Fi)',
     tag: 'ВИБІР ПОКУПЦІВ',
     description: 'Потужний двигун для важких воріт. Металевий редуктор та вбудований Wi-Fi.',
     specs: ['500W', 'Метал', 'до 1000 кг'],
-    basePrice: 10500,
-    maxWeight: 1000
+    basePrice: 10380,
+    maxWeight: 1000,
+    minWeight: 0
   },
   {
-    id: 'miller-technics-800',
+    id: 'miller-800',
     name: 'Miller Technics 800',
     tag: 'ВИБІР ЕКСПЕРТІВ',
     description: 'Преміум-клас. Надійний двигун з масивним металевим редуктором для важких умов.',
     specs: ['400W', 'Латунь/Сталь', 'до 800 кг'],
     basePrice: 14999,
-    maxWeight: 800
+    maxWeight: 800,
+    minWeight: 0
   },
   {
-    id: 'rotelli-sl1100',
-    name: 'Rotelli Premium SL 1100 Wi-Fi',
+    id: 'miller-1000',
+    name: 'Miller Technics 1000 (Невбиваємий Трактор)',
+    tag: 'ТЯЖКОВИК',
+    description: 'Супер-потужний двигун із запасом міцності та 10 роками гарантії на редуктор!',
+    specs: ['500W', 'Сталь/Латунь', 'до 1000 кг'],
+    basePrice: 16037,
+    maxWeight: 1000,
+    minWeight: 800
+  },
+  {
+    id: 'rotelli-1100',
+    name: 'Rotelli Premium 1100 (вбудований Wi-Fi)',
     tag: 'ПРЕМІУМ (ІТАЛІЯ)',
     description: 'Промисловий запас міцності та вбудоване керування з телефона в комплекті.',
     specs: ['500W', 'Сталь', 'до 1100 кг'],
     basePrice: 14480,
-    maxWeight: 1100
+    maxWeight: 1100,
+    minWeight: 0
+  },
+  {
+    id: 'rotelli-pro',
+    name: 'Rotelli PRO 2000 (Масляна ванна)',
+    tag: 'ПРОМИСЛОВИЙ',
+    description: 'Промисловий привід у рідкій масляній ванні для безперервної роботи 24/7',
+    specs: ['1000W', 'Сталь/Масло', 'до 2000 кг'],
+    basePrice: 19500,
+    maxWeight: 2000,
+    minWeight: 800
   },
   {
     id: 'no-engine',
@@ -57,7 +81,8 @@ const ENGINES_CATALOG = [
     description: 'Я планую відкривати ворота вручну',
     specs: ['-', '-', '-'],
     basePrice: 0,
-    maxWeight: 9999
+    maxWeight: 9999,
+    minWeight: 0
   }
 ];
 
@@ -406,7 +431,7 @@ export default function App() {
   const toothRackLength = gateWidth + 1;
   const toothRackPrice = isNoEngine ? 0 : toothRackLength * 350;
   
-  const hasBuiltInWifi = currentEngine.id.includes('edinger') || currentEngine.id.includes('rotelli');
+  const hasBuiltInWifi = currentEngine.id.includes('edinger') || currentEngine.id === 'rotelli-1100';
   const wifiPrice = (includeWifi && !hasBuiltInWifi && !isNoEngine) ? 600 : 0;
   const safetyPrice = (includeSafety && !isNoEngine) ? 1500 : 0;
   const totalPrice = hardwarePrice + currentEngine.basePrice + toothRackPrice + wifiPrice + safetyPrice;
@@ -414,7 +439,7 @@ export default function App() {
   const totalSavings = retailPrice - totalPrice;
 
   // --- Фільтрація по вазі (матриця сумісності) ---
-  const compatibleEngines = ENGINES_CATALOG.filter(e => e.maxWeight >= gateWeight);
+  const compatibleEngines = ENGINES_CATALOG.filter(e => e.maxWeight >= gateWeight && (e.minWeight ? gateWeight >= e.minWeight : true));
   const compatibleHardware = HARDWARE_CATALOG.filter(h => h.maxWeight >= gateWeight);
 
   // --- Маска телефону (без змін) ---
