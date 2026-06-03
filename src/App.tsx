@@ -351,6 +351,11 @@ export default function App() {
   const [clientName, setClientName] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
 
+  // --- Скрол нагору при зміні кроку ---
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [step]);
+
   // --- Lenis Smooth Scroll ---
   useEffect(() => {
     const lenis = new Lenis({
