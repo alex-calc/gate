@@ -353,7 +353,7 @@ export default function App() {
 
   // --- Скрол нагору при зміні кроку ---
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.getElementById('calculator-top')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, [step]);
 
   // --- Lenis Smooth Scroll ---
@@ -589,7 +589,7 @@ export default function App() {
       <AiPromoBanner onOpen={() => setChatOpen(true)} />
 
       {/* ====== СВІТЛИЙ КАЛЬКУЛЯТОР ====== */}
-      <section className="pb-24 max-w-6xl mx-auto px-4 relative z-10">
+      <section id="calculator-top" className="pb-24 max-w-6xl mx-auto px-4 relative z-10">
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Ліва колонка: кроки (Світла карточка) */}
           <div className="lg:col-span-2 bg-white border border-slate-200 rounded-[2.5rem] p-8 sm:p-12 shadow-2xl">
