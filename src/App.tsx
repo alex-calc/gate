@@ -497,7 +497,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 font-sans selection:bg-blue-500/30">
+    <div className="min-h-screen bg-slate-900 font-sans selection:bg-blue-500/30 overflow-x-hidden w-full">
       {/* ====== HEADER & HERO (Тёмный фон) ====== */}
       <AuroraBackground className="pt-32 pb-24 sm:pt-40 sm:pb-32 min-h-[90vh]">
         <header className="bg-slate-900/50 backdrop-blur-md border-b border-slate-800 fixed w-full top-0 z-50">
