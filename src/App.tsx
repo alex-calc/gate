@@ -669,9 +669,9 @@ export default function App() {
                           ? 'border-blue-600 bg-blue-50 ring-1 ring-blue-600 shadow-sm'
                           : 'border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 shadow-sm'
                       }`}>
-                      <div className="flex justify-between items-start mb-1">
+                      <div className="flex justify-between items-start mb-1 gap-4">
                         <h4 className="font-bold text-slate-900 text-base">{hw.name}</h4>
-                        <span className="font-mono text-blue-600 font-bold text-base">{getHardwarePrice(hw.id, guideRailLength)} ₴</span>
+                        <span className="font-mono text-blue-600 font-bold text-base shrink-0 whitespace-nowrap">{getHardwarePrice(hw.id, guideRailLength)} ₴</span>
                       </div>
                       <p className="text-sm text-slate-700">{hw.desc}</p>
                       <div className="text-[11px] text-slate-500 font-mono mt-2 bg-slate-100 inline-block px-2 py-0.5 rounded">Товщина напрямної рейки: {hw.thickness} | до {hw.maxWeight} кг</div>
@@ -722,14 +722,14 @@ export default function App() {
                       </div>
 
                       <div className="flex-1">
-                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-2 gap-1.5">
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-2 gap-2 sm:gap-4">
                           <h4 className="font-bold text-slate-900 text-base flex flex-wrap items-center gap-2">
                             {engine.name}
                             {engine.tag && (
                               <span className="bg-blue-100 text-blue-700 text-[10px] px-2 py-0.5 rounded border border-blue-200 font-mono whitespace-nowrap font-bold">{engine.tag}</span>
                             )}
                           </h4>
-                          <span className="font-mono text-blue-600 font-bold text-base sm:text-lg whitespace-nowrap">{engine.basePrice} ₴</span>
+                          <span className="font-mono text-blue-600 font-bold text-base sm:text-lg shrink-0 whitespace-nowrap">{engine.basePrice} ₴</span>
                         </div>
                         <p className="text-sm text-slate-700 leading-relaxed">{engine.description}</p>
                         <div className="flex flex-wrap gap-2 mt-2.5">
