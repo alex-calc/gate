@@ -90,7 +90,7 @@ const ENGINES_CATALOG = [
 const HARDWARE_CATALOG = [
   { id: 'standart-3.6', name: 'Novi Vorota Standart (3.6 мм)', maxWeight: 500, thickness: '3.6 мм', price: 3925, desc: 'Для легких воріт з профнастилу.' },
   { id: 'gospodar-4.0', name: 'Novi Vorota Gospodar (4.0 мм)', maxWeight: 500, thickness: '4.0 мм', price: 4525, desc: 'Посилений направляючий рельс для довговічності.' },
-  { id: 'fayna-5.0', name: 'Novi Vorota Fayna (5.0 мм)', maxWeight: 800, thickness: '5.0 мм', price: 8757, desc: 'Для важких кованих або широких воріт.' },
+  { id: 'fayna-5.0', name: 'Novi Vorota Fayna (5.0 мм)', maxWeight: 1000, thickness: '5.0 мм', price: 8757, desc: 'Для важких кованих або широких воріт.' },
   { id: 'no-hardware', name: 'Фурнітура не потрібна (тільки автоматика)', maxWeight: 9999, thickness: '-', price: 0, desc: 'Я вже маю фурнітуру' }
 ];
 
@@ -257,7 +257,7 @@ function YoutubeBlock() {
         <div className="grid sm:grid-cols-2 gap-5">
           {[
             { title: 'Встановлення фурнітури Novi Vorota', duration: '12:34', views: '48K' },
-            { title: 'Підключення автоматики Edinger S6', duration: '08:21', views: '31K' },
+            { title: 'Підключення автоматики Edinger S8', duration: '08:21', views: '31K' },
           ].map((video, i) => (
             <div key={i} className="group bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden cursor-pointer hover:border-slate-300 hover:shadow-md transition-all">
               <div className="aspect-video bg-slate-800 flex flex-col items-center justify-center relative">
@@ -609,7 +609,7 @@ export default function App() {
                     {[
                       { weight: 300, name: 'Легкі', sub: 'Профнастил, сітка' },
                       { weight: 500, name: 'Середні', sub: 'Дерево, метал' },
-                      { weight: 800, name: 'Важкі', sub: 'Ковка, фільонка' },
+                      { weight: 1000, name: 'Важкі', sub: 'Ковка, фільонка' },
                     ].map(card => (
                       <div key={card.weight} 
                         onClick={() => setGateWeight(card.weight)}
