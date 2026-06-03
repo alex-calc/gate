@@ -353,7 +353,9 @@ export default function App() {
 
   // --- Скрол нагору при зміні кроку ---
   useEffect(() => {
-    document.getElementById('calculator-top')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (window.innerWidth < 1024) {
+      document.getElementById('calculator-top')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }, [step]);
 
   // --- Lenis Smooth Scroll ---
