@@ -212,12 +212,13 @@ function GuaranteeBlock() {
           </div>
           <h3 className="font-bold text-slate-900 mb-3 text-lg">Швидка доставка</h3>
           <p className="text-sm text-slate-600 leading-relaxed mb-6 flex-1">
-            Відправка зі складу в день замовлення. Нова Пошта, Укрпошта або самовивіз. По всій Україні — без доплат за регіон.
+            Відправка зі складу в день замовлення. Нова Пошта, Делівері або САТ. По всій Україні — без доплат за регіон.
           </p>
           <div className="flex flex-wrap gap-2 mt-auto">
             <span className="text-[11px] font-bold bg-blue-50 text-blue-700 px-3 py-1.5 rounded-lg">1-3 дні</span>
             <span className="text-[11px] font-bold bg-blue-50 text-blue-700 px-3 py-1.5 rounded-lg">Нова Пошта</span>
-            <span className="text-[11px] font-bold bg-blue-50 text-blue-700 px-3 py-1.5 rounded-lg">Укрпошта</span>
+            <span className="text-[11px] font-bold bg-blue-50 text-blue-700 px-3 py-1.5 rounded-lg">Делівері</span>
+            <span className="text-[11px] font-bold bg-blue-50 text-blue-700 px-3 py-1.5 rounded-lg">САТ</span>
           </div>
         </MagicCard>
 
