@@ -668,7 +668,7 @@ export default function App() {
                         <h4 className="font-bold text-slate-900 text-base">{hw.name}</h4>
                         <span className="font-mono text-blue-600 font-bold text-base">{getHardwarePrice(hw.id, guideRailLength)} ₴</span>
                       </div>
-                      <p className="text-sm text-slate-600">{hw.desc}</p>
+                      <p className="text-sm text-slate-700">{hw.desc}</p>
                       <div className="text-[11px] text-slate-500 font-mono mt-2 bg-slate-100 inline-block px-2 py-0.5 rounded">Товщина напрямної рейки: {hw.thickness} | до {hw.maxWeight} кг</div>
                     </div>
                   ))}
@@ -726,7 +726,7 @@ export default function App() {
                           </h4>
                           <span className="font-mono text-blue-600 font-bold text-base sm:text-lg whitespace-nowrap">{engine.basePrice} ₴</span>
                         </div>
-                        <p className="text-sm text-slate-600 leading-relaxed">{engine.description}</p>
+                        <p className="text-sm text-slate-700 leading-relaxed">{engine.description}</p>
                         <div className="flex flex-wrap gap-2 mt-2.5">
                           <div className="text-[11px] text-slate-500 font-mono bg-slate-100 inline-block px-2.5 py-1 rounded-md border border-slate-200">
                             {engine.specs.join(' | ')}
