@@ -654,7 +654,7 @@ export default function App() {
                         <span className="font-mono text-blue-600 font-bold text-base">{getHardwarePrice(hw.id, guideRailLength)} ₴</span>
                       </div>
                       <p className="text-sm text-slate-600">{hw.desc}</p>
-                      <div className="text-[11px] text-slate-500 font-mono mt-2 bg-slate-100 inline-block px-2 py-0.5 rounded">Товщина: {hw.thickness} | до {hw.maxWeight} кг</div>
+                      <div className="text-[11px] text-slate-500 font-mono mt-2 bg-slate-100 inline-block px-2 py-0.5 rounded">Товщина напрямної рейки: {hw.thickness} | до {hw.maxWeight} кг</div>
                     </div>
                   ))}
                 </div>
