@@ -353,10 +353,22 @@ export default function App() {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   // --- Скрол нагору при зміні кроку ---
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.innerWidth >= 1024) return;
-    document.getElementById('calculator-top')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, [step]);
+  const handleStepChange = (newStep: number) => {
+    const el = document.getElementById('calculator-top');
+    if (el) {
+      if (typeof window !== 'undefined' && window.innerWidth >= 1024) {
+        // На десктопі миттєво підтягуємо скрол до початку калькулятора ТІЛЬКИ ЯКЩО користувач проскролив нижче
+        const rect = el.getBoundingClientRect();
+        if (rect.top < 0) {
+          window.scrollTo({ top: window.scrollY + rect.top - 20, behavior: 'instant' as ScrollBehavior });
+        }
+      } else {
+        // На мобільному плавно скролимо
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+    setStep(newStep);
+  };
 
   // --- Lenis Smooth Scroll ---
   useEffect(() => {
@@ -594,7 +606,7 @@ export default function App() {
       <section className="pb-24 max-w-6xl mx-auto px-4 relative z-10">
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Ліва колонка: кроки (Світла карточка) */}
-          <div id="calculator-top" className="lg:col-span-2 bg-white border border-slate-200 rounded-[2.5rem] p-8 sm:p-12 shadow-2xl min-h-[800px] lg:min-h-[1000px] transition-all">
+          <div id="calculator-top" className="lg:col-span-2 bg-white border border-slate-200 rounded-[2.5rem] p-8 sm:p-12 shadow-2xl">
 
             {/* Steps Indicator */}
             <div className="flex items-center justify-between border-b border-slate-100 pb-8 mb-10 text-xs font-mono text-slate-400">
@@ -646,7 +658,7 @@ export default function App() {
                     ))}
                   </div>
                 </div>
-                <ShimmerButton onClick={() => setStep(2)} className="w-full bg-blue-600 hover:bg-blue-700 py-4 px-4 shadow-md mt-6">
+                <ShimmerButton onClick={() => handleStepChange(2)} className="w-full bg-blue-600 hover:bg-blue-700 py-4 px-4 shadow-md mt-6">
                   <span>Далі до вибору фурнітури</span>
                   <ArrowRight className="w-5 h-5 ml-1 group-hover:translate-x-1.5 transition-transform duration-300" />
                 </ShimmerButton>
@@ -690,8 +702,8 @@ export default function App() {
                   </p>
                 </div>
                 <div className="flex gap-4 pt-2">
-                  <button onClick={() => setStep(1)} className="w-1/3 bg-slate-100 border border-slate-200 hover:bg-slate-200 text-slate-700 font-bold py-3.5 px-4 rounded-xl transition-all">Назад</button>
-                  <ShimmerButton onClick={() => setStep(3)} className="w-2/3 bg-blue-600 hover:bg-blue-700 py-3.5 px-4 shadow-md">
+                  <button onClick={() => handleStepChange(1)} className="w-1/3 bg-slate-100 border border-slate-200 hover:bg-slate-200 text-slate-700 font-bold py-3.5 px-4 rounded-xl transition-all">Назад</button>
+                  <ShimmerButton onClick={() => handleStepChange(3)} className="w-2/3 bg-blue-600 hover:bg-blue-700 py-3.5 px-4 shadow-md">
                     <span>Далі до вибору автоматики</span><ArrowRight className="w-5 h-5 ml-1 group-hover:translate-x-1.5 transition-transform duration-300" />
                   </ShimmerButton>
                 </div>
@@ -792,7 +804,7 @@ export default function App() {
                 </div>
 
                 <div className="flex gap-4 pt-2">
-                  <button onClick={() => setStep(2)} className="w-1/3 bg-slate-100 border border-slate-200 hover:bg-slate-200 text-slate-700 font-bold py-3.5 px-4 rounded-xl transition-all">Назад</button>
+                  <button onClick={() => handleStepChange(2)} className="w-1/3 bg-slate-100 border border-slate-200 hover:bg-slate-200 text-slate-700 font-bold py-3.5 px-4 rounded-xl transition-all">Назад</button>
                   <ShimmerButton onClick={scrollToCheckout} className="w-2/3 bg-emerald-600 hover:bg-emerald-700 py-3.5 px-4 shadow-md">
                     <span>Оформити замовлення</span><ArrowRight className="w-5 h-5 ml-1" />
                   </ShimmerButton>
@@ -983,7 +995,7 @@ export default function App() {
           </div>
           <button 
             onClick={() => {
-              if (step < 3) setStep(step + 1);
+              if (step < 3) handleStepChange(step + 1);
               else scrollToCheckout();
             }}
             className="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-bold py-2.5 px-6 rounded-xl transition-all shadow-md text-sm flex items-center gap-2"
