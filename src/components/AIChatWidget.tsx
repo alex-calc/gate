@@ -1,6 +1,15 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Sparkles, Send, X, Bot, User } from 'lucide-react';
-import { useChat } from 'ai/react';
+import React, { useRef, useEffect } from 'react';
+import { Send, X, Bot } from 'lucide-react';
+import { useChat as originalUseChat } from '@ai-sdk/react';
+
+// Обхід проблеми з типізацією useChat у новій версії SDK
+const useChat = originalUseChat as any;
+
+interface Message {
+  id: string;
+  role: string;
+  content: string;
+}
 
 interface AIChatWidgetProps {
   calculatorState: {
@@ -76,7 +85,7 @@ export function AIChatWidget({ calculatorState, isSubmitted, isOpen, onOpen, onC
 
           {/* Chat area */}
           <div className="flex-1 p-4 overflow-y-auto space-y-4 text-sm bg-slate-50/50">
-            {messages.map((msg) => (
+            {messages.map((msg: Message) => (
               <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 {msg.role !== 'user' && (
                   <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center shrink-0 mr-2 mt-1">
@@ -91,7 +100,7 @@ export function AIChatWidget({ calculatorState, isSubmitted, isOpen, onOpen, onC
                   }`}
                 >
                   {/* Basic markdown-like rendering for bold text */}
-                  {msg.content.split('\n').map((line, i) => (
+                  {msg.content.split('\n').map((line: string, i: number) => (
                     <React.Fragment key={i}>
                       {line}
                       {i !== msg.content.split('\n').length - 1 && <br />}
