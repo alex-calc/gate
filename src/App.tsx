@@ -353,9 +353,8 @@ export default function App() {
 
   // --- Скрол нагору при зміні кроку ---
   useEffect(() => {
-    if (window.innerWidth < 1024) {
-      document.getElementById('calculator-top')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    if (typeof window !== 'undefined' && window.innerWidth >= 1024) return;
+    document.getElementById('calculator-top')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, [step]);
 
   // --- Lenis Smooth Scroll ---
@@ -591,10 +590,10 @@ export default function App() {
       <AiPromoBanner onOpen={() => setChatOpen(true)} />
 
       {/* ====== СВІТЛИЙ КАЛЬКУЛЯТОР ====== */}
-      <section id="calculator-top" className="pb-24 max-w-6xl mx-auto px-4 relative z-10">
+      <section className="pb-24 max-w-6xl mx-auto px-4 relative z-10">
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Ліва колонка: кроки (Світла карточка) */}
-          <div className="lg:col-span-2 bg-white border border-slate-200 rounded-[2.5rem] p-8 sm:p-12 shadow-2xl">
+          <div id="calculator-top" className="lg:col-span-2 bg-white border border-slate-200 rounded-[2.5rem] p-8 sm:p-12 shadow-2xl">
 
             {/* Steps Indicator */}
             <div className="flex items-center justify-between border-b border-slate-100 pb-8 mb-10 text-xs font-mono text-slate-400">
