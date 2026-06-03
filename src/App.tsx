@@ -593,7 +593,7 @@ export default function App() {
       <section className="pb-24 max-w-6xl mx-auto px-4 relative z-10">
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Ліва колонка: кроки (Світла карточка) */}
-          <div id="calculator-top" className="lg:col-span-2 bg-white border border-slate-200 rounded-[2.5rem] p-8 sm:p-12 shadow-2xl">
+          <div id="calculator-top" className="lg:col-span-2 bg-white border border-slate-200 rounded-[2.5rem] p-8 sm:p-12 shadow-2xl min-h-[800px] lg:min-h-[1000px] transition-all">
 
             {/* Steps Indicator */}
             <div className="flex items-center justify-between border-b border-slate-100 pb-8 mb-10 text-xs font-mono text-slate-400">
