@@ -439,10 +439,25 @@ export default function App() {
   const compatibleEngines = ENGINES_CATALOG.filter(e => e.maxWeight >= gateWeight && (e.minWeight ? gateWeight >= e.minWeight : true));
   const compatibleHardware = HARDWARE_CATALOG.filter(h => h.maxWeight >= gateWeight);
 
-  // --- Маска телефону (без змін) ---
+  // --- Розумна маска телефону ---
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const input = e.target.value.replace(/\D/g, '');
-    if (input.length <= 9) setPhoneNumber(input);
+    let input = e.target.value.replace(/\D/g, '');
+    
+    // Обробка вставленого номера з префіксом (наприклад, +380 або 380)
+    if (input.startsWith('380')) {
+      input = input.substring(3);
+    } else if (input.startsWith('80')) {
+      input = input.substring(2);
+    }
+    
+    // Якщо номер починається з 0 (наприклад, 097...), прибираємо його
+    if (input.startsWith('0')) {
+      input = input.substring(1);
+    }
+
+    if (input.length <= 9) {
+      setPhoneNumber(input);
+    }
   };
 
   const submitOrder = async (e: React.FormEvent) => {
