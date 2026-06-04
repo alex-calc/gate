@@ -885,6 +885,26 @@ export default function App() {
                   className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3.5 px-4 rounded-xl transition-all shadow-md active:scale-[0.98] text-sm uppercase tracking-wider">
                   Отримати креслення та ціну
                 </button>
+
+                {/* Блок Гарантії */}
+                <div className="mt-5 bg-emerald-50/50 border border-emerald-100 rounded-lg p-4 text-sm shadow-sm">
+                  <div className="font-bold text-emerald-900 mb-2 flex items-center gap-2">
+                    <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0" />
+                    Гарантія 5 років від виробника
+                  </div>
+                  <p className="text-xs mb-3 text-emerald-800/90 font-medium leading-relaxed">
+                    Ми офіційні постачальники Edinger, Miller Technics та Rotelli в Україні.
+                  </p>
+                  <ul className="text-xs space-y-2 mb-3 text-emerald-900/80 font-medium">
+                    <li className="flex items-start gap-1.5"><CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" /> 5 років гарантії на приводи</li>
+                    <li className="flex items-start gap-1.5"><CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" /> Повернення навіть після встановлення</li>
+                    <li className="flex items-start gap-1.5"><CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" /> Безкоштовна заміна при гарантійній поломці</li>
+                    <li className="flex items-start gap-1.5"><CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" /> Офіційний сервісний центр у Києві</li>
+                  </ul>
+                  <p className="text-[11px] text-emerald-800/70 border-t border-emerald-200/60 pt-2.5 leading-relaxed font-medium">
+                    Якщо привід зламається — ми вирішимо питання.<br/>Без бюрократії і довгих очікувань.
+                  </p>
+                </div>
               </form>
             ) : (
               <div className="bg-emerald-50 border border-emerald-200 p-5 sm:p-6 rounded-2xl shadow-xl text-center text-sm text-emerald-900 relative overflow-hidden animate-fadeIn">
