@@ -1030,7 +1030,7 @@ export default function App() {
 
       {/* ====== FLOATING AI ЧАТ ====== */}
       <AIChatWidget 
-        calculatorState={{ gateWidth, gateWeight, selectedEngine, selectedHardware }} 
+        calculatorState={{ gateWidth, gateWeight, selectedEngine, selectedHardware, guideRailLength }} 
         isSubmitted={isSubmitted} 
         isOpen={chatOpen}
         onOpen={() => setChatOpen(true)}

@@ -17,6 +17,7 @@ interface AIChatWidgetProps {
     gateWeight: number;
     selectedEngine: string;
     selectedHardware: string;
+    guideRailLength?: number;
   };
   isSubmitted: boolean;
   isOpen: boolean;
@@ -27,7 +28,18 @@ interface AIChatWidgetProps {
 export function AIChatWidget({ calculatorState, isSubmitted, isOpen, onOpen, onClose }: AIChatWidgetProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
+  const getInitialMessage = () => {
+    const { gateWidth, gateWeight, guideRailLength } = calculatorState;
+    const material = gateWeight === 300 ? 'Профнастил, сітка' : gateWeight === 500 ? 'Дерево, метал' : 'Ковка, фільонка';
+    const railText = guideRailLength ? ` Направляюча балка буде ${guideRailLength} м.` : '';
+    
+    if (gateWidth > 4 || gateWeight >= 1000) {
+      return `Вітаю! Бачу, ви робите розрахунок для ворот на ${gateWidth} метрів (${material}).${railText} Для таких габаритів потрібна посилена фурнітура та потужна автоматика. Підказати, які моделі з нашого каталогу краще впораються з цим навантаженням?`;
+    }
+    return `Привіт! Бачу, ви плануєте ворота на ${gateWidth} метрів (${material}).${railText} Допоможу підібрати надійну автоматику, яка витримає наші зими. Які у вас запитання?`;
+  };
+
+  const { messages, setMessages, input, handleInputChange, handleSubmit, isLoading } = useChat({
     api: '/api/chat',
     body: {
       context: calculatorState,
@@ -36,10 +48,21 @@ export function AIChatWidget({ calculatorState, isSubmitted, isOpen, onOpen, onC
       {
         id: '1',
         role: 'assistant',
-        content: 'Привіт! Я AI-інженер Novi Vorota. Допоможу підібрати автоматику, яка витримає наші зими. Які у вас запитання?',
+        content: getInitialMessage(),
       },
     ],
   });
+
+  // Оновлюємо вітальне повідомлення, якщо користувач змінив параметри, але ще не почав діалог
+  useEffect(() => {
+    if (messages.length <= 1) {
+      setMessages([{
+        id: '1',
+        role: 'assistant',
+        content: getInitialMessage(),
+      }]);
+    }
+  }, [calculatorState, isOpen, messages.length, setMessages]);
 
   // Auto-scroll to bottom
   useEffect(() => {
