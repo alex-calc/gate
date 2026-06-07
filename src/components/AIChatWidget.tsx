@@ -28,41 +28,47 @@ interface AIChatWidgetProps {
 export function AIChatWidget({ calculatorState, isSubmitted, isOpen, onOpen, onClose }: AIChatWidgetProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const getInitialMessage = () => {
-    const { gateWidth, gateWeight, guideRailLength } = calculatorState;
-    const material = gateWeight === 300 ? 'Профнастил, сітка' : gateWeight === 500 ? 'Дерево, метал' : 'Ковка, фільонка';
-    const railText = guideRailLength ? ` Направляюча балка буде ${guideRailLength} м.` : '';
+  const { gateWidth, gateWeight, guideRailLength, selectedEngine, selectedHardware } = calculatorState;
+
+  const initialMessageContent = React.useMemo(() => {
+    const material = gateWeight === 300 ? 'профнастилу або сітки' : gateWeight === 500 ? 'дерева або металу' : 'ковки або фільонки';
     
     if (gateWidth > 4 || gateWeight >= 1000) {
-      return `Вітаю! Бачу, ви робите розрахунок для ворот на ${gateWidth} метрів (${material}).${railText} Для таких габаритів потрібна посилена фурнітура та потужна автоматика. Підказати, які моделі з нашого каталогу краще впораються з цим навантаженням?`;
+      return `Вітаю! 👋 Бачу, ви придивляєтесь до воріт на ${gateWidth} метрів (${material}). Для таких габаритів я б радив посилену направляючу на ${guideRailLength} м, щоб стулка не провисала з часом. Підказати, які варіанти моторів і фурнітури у нас є для такої ваги?`;
     }
-    return `Привіт! Бачу, ви плануєте ворота на ${gateWidth} метрів (${material}).${railText} Допоможу підібрати надійну автоматику, яка витримає наші зими. Які у вас запитання?`;
-  };
+    return `Привіт! 👋 Бачу, ви плануєте акуратні ворота на ${gateWidth} метрів з ${material}. Сюди ідеально підійде направляюча на ${guideRailLength} м. Допоможу підібрати надійну автоматику, щоб працювала без проблем у будь-які морози. Які у вас запитання?`;
+  }, [gateWidth, gateWeight, guideRailLength]);
+
+  const chatBody = React.useMemo(() => ({
+    context: { gateWidth, gateWeight, guideRailLength, selectedEngine, selectedHardware }
+  }), [gateWidth, gateWeight, guideRailLength, selectedEngine, selectedHardware]);
+
+  const initialMessagesList = React.useMemo(() => [
+    {
+      id: '1',
+      role: 'assistant',
+      content: initialMessageContent,
+    }
+  ], [initialMessageContent]);
 
   const { messages, setMessages, input, handleInputChange, handleSubmit, isLoading } = useChat({
     api: '/api/chat',
-    body: {
-      context: calculatorState,
-    },
-    initialMessages: [
-      {
-        id: '1',
-        role: 'assistant',
-        content: getInitialMessage(),
-      },
-    ],
+    body: chatBody,
+    initialMessages: initialMessagesList,
   });
 
   // Оновлюємо вітальне повідомлення, якщо користувач змінив параметри, але ще не почав діалог
   useEffect(() => {
-    if (messages.length <= 1) {
-      setMessages([{
-        id: '1',
-        role: 'assistant',
-        content: getInitialMessage(),
-      }]);
+    if (messages.length === 1 && messages[0].role === 'assistant') {
+      if (messages[0].content !== initialMessageContent) {
+        setMessages([{
+          id: '1',
+          role: 'assistant',
+          content: initialMessageContent,
+        }]);
+      }
     }
-  }, [calculatorState, isOpen, messages.length, setMessages]);
+  }, [initialMessageContent, messages, setMessages]);
 
   // Auto-scroll to bottom
   useEffect(() => {

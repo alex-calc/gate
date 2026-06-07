@@ -35,10 +35,15 @@ export default async function handler(req: Request) {
     const lastMessage = messages[messages.length - 1];
     
     // Generate embedding for user query using Google's embedding model
-    const embeddingResponse = await google.embedding('text-embedding-004').doEmbed({
+    const embeddingResponse = await google.embedding('gemini-embedding-001').doEmbed({
       values: [lastMessage.content],
     });
-    const embedding = embeddingResponse.embeddings[0];
+    let embedding = embeddingResponse.embeddings[0];
+    if (embedding.length > 768) {
+      embedding = embedding.slice(0, 768);
+      const norm = Math.sqrt(embedding.reduce((sum: number, v: number) => sum + v*v, 0));
+      embedding = embedding.map((v: number) => v / norm);
+    }
 
     // Query Supabase for similar context
     const { data: documents, error } = await supabase.rpc('match_documents', {
@@ -58,10 +63,7 @@ export default async function handler(req: Request) {
     }
 
     // System prompt with context injected
-    const systemPrompt = `
-Ви — розумний інженер-консультант з підбору воріт та автоматики.
-Ваше завдання: допомагати клієнтам обрати правильну фурнітуру та автоматику для їхніх воріт.
-Відповідайте коротко, професійно та привітно. Форматуйте текст зручно (маркери, жирний шрифт).
+    const systemPrompt = `Ти — привітний та експертний менеджер магазину воріт. Твоя мета — консультувати клієнтів простою і зрозумілою мовою. Ти не робот, а жива людина. Ніколи не вигадуй ціни та характеристики! Використовуй тільки ту інформацію, яку знайдеш у базі знань. Якщо інформації немає — чесно скажи, що уточниш це питання.
 
 === ПОТОЧНИЙ ВИБІР КЛІЄНТА (З КАЛЬКУЛЯТОРА) ===
 Ширина воріт: ${context?.gateWidth || 'Не вказано'} м
