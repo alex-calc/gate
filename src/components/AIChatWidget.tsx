@@ -168,7 +168,7 @@ export function AIChatWidget({ calculatorState, isSubmitted, isOpen, onOpen, onC
             />
             <button
               type="submit"
-              disabled={!(input || '').trim() || isLoading}
+              disabled={!input?.trim() || isLoading}
               className="bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white px-3 py-2 rounded-xl transition-all shadow-sm active:scale-95 flex items-center justify-center"
             >
               <Send className="w-4 h-4" />
