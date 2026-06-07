@@ -59,14 +59,15 @@ export function AIChatWidget({ calculatorState, isSubmitted, isOpen, onOpen, onC
 
   // Оновлюємо вітальне повідомлення, якщо користувач змінив параметри, але ще не почав діалог
   useEffect(() => {
-    if (messages.length === 1 && messages[0].role === 'assistant') {
-      if (messages[0].content !== initialMessageContent) {
-        setMessages([{
-          id: '1',
-          role: 'assistant',
-          content: initialMessageContent,
-        }]);
-      }
+    const isChatEmpty = messages.length === 0;
+    const isOnlyGreeting = messages.length === 1 && messages[0].role === 'assistant';
+    
+    if (isChatEmpty || (isOnlyGreeting && messages[0].content !== initialMessageContent)) {
+      setMessages([{
+        id: 'welcome-message',
+        role: 'assistant',
+        content: initialMessageContent,
+      }]);
     }
   }, [initialMessageContent, messages, setMessages]);
 
