@@ -99,7 +99,8 @@ const HARDWARE_CATALOG = [
 // ============================================================
 
 function GateVisualizer({ width, weight }: { width: number, weight: number }) {
-  const widthPercent = 40 + ((width - 3) / 2.5) * 60;
+  // Пропорційне відображення ширини (від 3м до 5.5м)
+  const widthPercent = (width / 5.5) * 100;
   
   let textureClass = "bg-blue-300"; 
   let borderClass = "border-blue-400";
@@ -410,9 +411,7 @@ export default function App() {
 
   // --- Нова логіка фурнітури ---
   const getGuideRailLength = (width: number) => {
-    if (width <= 3.5) return 5;
-    if (width <= 4.5) return 6;
-    return 7;
+    return Math.ceil(width * 1.5);
   };
 
   const guideRailLength = getGuideRailLength(gateWidth);
