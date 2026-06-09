@@ -145,7 +145,7 @@ ${ragContext ? ragContext : "Інформація не знайдена."}
       system: systemPrompt,
     });
 
-    return result.toTextStreamResponse();
+    return result.toDataStreamResponse();
   } catch (error: any) {
     console.error('Chat API Error:', error);
     return new Response(JSON.stringify({ error: error.message }), { status: 500 });
