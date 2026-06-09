@@ -1,7 +1,11 @@
-import process from 'process';
 import { streamText, embed } from 'ai';
 import { createClient } from '@supabase/supabase-js';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
+
+// Edge runtime config for Vercel (allows Web Request/Response and streaming)
+export const config = {
+  runtime: 'edge',
+};
 
 // Setup Google Gen AI provider using the key from env
 const google = createGoogleGenerativeAI({
@@ -25,7 +29,7 @@ export default async function handler(req: Request) {
   }
 
   try {
-    const body = typeof req.json === 'function' ? await req.json() : (req as any).body;
+    const body = await req.json();
     console.log("Входящий body:", body);
     
     let { messages, context } = body || {};
