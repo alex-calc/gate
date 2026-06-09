@@ -1,5 +1,5 @@
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
-import { streamText, generateEmbeddings } from 'ai';
+import { streamText, embed } from 'ai';
 import { createClient } from '@supabase/supabase-js';
 
 // Setup Google Gen AI provider using the key from env
@@ -51,25 +51,38 @@ export default async function handler(req: Request) {
     const lastMessage = messages[messages.length - 1];
     
     // Generate embedding for user query using Google's embedding model
-    const embeddingResponse = await google.embedding('gemini-embedding-001').doEmbed({
-      values: [lastMessage.content],
-    });
-    let embedding = embeddingResponse.embeddings[0];
-    if (embedding.length > 768) {
-      embedding = embedding.slice(0, 768);
-      const norm = Math.sqrt(embedding.reduce((sum: number, v: number) => sum + v*v, 0));
-      embedding = embedding.map((v: number) => v / norm);
+    let embedding = null;
+    try {
+      const { embedding: emb } = await embed({
+        model: google.textEmbeddingModel('text-embedding-004'),
+        value: lastMessage.content,
+      });
+      embedding = emb;
+    } catch (embError) {
+      console.error('Embedding failed, continuing without context:', embError);
     }
 
-    // Query Supabase for similar context
-    const { data: documents, error } = await supabase.rpc('match_documents', {
-      query_embedding: embedding,
-      match_threshold: 0.7, // Adjust as needed
-      match_count: 5,
-    });
+    let documents = null;
+    
+    if (embedding) {
+      if (embedding.length > 768) {
+        embedding = embedding.slice(0, 768);
+        const norm = Math.sqrt(embedding.reduce((sum: number, v: number) => sum + v*v, 0));
+        embedding = embedding.map((v: number) => v / norm);
+      }
 
-    if (error) {
-      console.error('Supabase match error:', error);
+      // Query Supabase for similar context
+      const { data, error } = await supabase.rpc('match_documents', {
+        query_embedding: embedding,
+        match_threshold: 0.7, // Adjust as needed
+        match_count: 5,
+      });
+      
+      documents = data;
+
+      if (error) {
+        console.error('Supabase match error:', error);
+      }
     }
 
     // Build the RAG Context string
