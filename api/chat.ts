@@ -142,7 +142,7 @@ ${ragContext ? ragContext : "Інформація відсутня."}
     const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY || '');
     
     const model = genAI.getGenerativeModel({
-      model: 'gemini-1.5-flash',
+      model: 'gemini-2.5-flash',
       systemInstruction: systemPrompt
     });
 
@@ -166,7 +166,13 @@ ${ragContext ? ragContext : "Інформація відсутня."}
           }
           controller.close();
         } catch (e: any) {
-          controller.enqueue(new TextEncoder().encode(`3:${JSON.stringify(e.message)}\n`));
+          const errorMessage = e.message || '';
+          if (errorMessage.includes('503') || errorMessage.includes('overloaded') || errorMessage.includes('high demand')) {
+            const friendlyError = "\n\n*(Сервери Google зараз перевантажені через високий попит. Будь ласка, зачекайте кілька секунд і спробуйте ще раз)*";
+            controller.enqueue(new TextEncoder().encode(`0:${JSON.stringify(friendlyError)}\n`));
+          } else {
+            controller.enqueue(new TextEncoder().encode(`3:${JSON.stringify(errorMessage)}\n`));
+          }
           controller.close();
         }
       }
