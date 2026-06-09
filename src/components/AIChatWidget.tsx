@@ -1,9 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { Send, X, Bot } from 'lucide-react';
-import { useChat as originalUseChat } from '@ai-sdk/react';
-
-// Обхід проблеми з типізацією useChat у новій версії SDK
-const useChat = originalUseChat as any;
+import { useChat } from 'ai/react';
 
 
 
