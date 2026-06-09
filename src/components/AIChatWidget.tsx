@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { Send, X, Bot } from 'lucide-react';
 import { useChat as originalUseChat } from '@ai-sdk/react';
 
@@ -51,11 +51,20 @@ export function AIChatWidget({ calculatorState, isSubmitted, isOpen, onOpen, onC
     }
   ], [initialMessageContent]);
 
-  const { messages, setMessages, input, handleInputChange, handleSubmit, isLoading } = useChat({
+  const { messages, setMessages, append, isLoading } = useChat({
     api: '/api/chat',
     body: chatBody,
     initialMessages: initialMessagesList,
   });
+
+  const [text, setText] = useState('');
+
+  const onFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!text.trim() || isLoading) return;
+    append({ role: 'user', content: text });
+    setText('');
+  };
 
   // Оновлюємо вітальне повідомлення, якщо користувач змінив параметри, але ще не почав діалог
   useEffect(() => {
@@ -157,16 +166,16 @@ export function AIChatWidget({ calculatorState, isSubmitted, isOpen, onOpen, onC
           </div>
 
           {/* Input Area */}
-          <form onSubmit={handleSubmit} className="p-3 bg-white border-t border-slate-200 flex gap-2">
+          <form onSubmit={onFormSubmit} className="p-3 bg-white border-t border-slate-200 flex gap-2">
             <input
-              value={input}
-              onChange={handleInputChange}
+              value={text}
+              onChange={(e) => setText(e.target.value)}
               placeholder="Запитати про редуктор, вагу, ціну..."
               className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all placeholder:text-slate-400 disabled:opacity-50"
             />
             <button
               type="submit"
-              disabled={!(input || '').trim() || isLoading}
+              disabled={!text.trim() || isLoading}
               className="bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white px-3 py-2 rounded-xl transition-all shadow-sm active:scale-95 flex items-center justify-center"
             >
               <Send className="w-4 h-4" />
