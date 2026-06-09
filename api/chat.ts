@@ -21,7 +21,19 @@ export default async function handler(req: Request) {
   }
 
   try {
-    const { messages, context } = await req.json();
+    const body = await req.json();
+    console.log("Входящий body:", body);
+    
+    let { messages, context } = body || {};
+    
+    // Fallback: if messages is undefined, but the body itself is a message object
+    if (!messages) {
+      if (body.role && body.content) {
+        messages = [body];
+      } else {
+        messages = [];
+      }
+    }
 
     // Limit check to prevent abuse
     if (messages.length > 20) {
@@ -29,6 +41,10 @@ export default async function handler(req: Request) {
         JSON.stringify({ error: "Ліміт повідомлень вичерпано. Будь ласка, зателефонуйте менеджеру для подальшої консультації." }), 
         { status: 429 }
       );
+    }
+
+    if (messages.length === 0) {
+      return new Response(JSON.stringify({ error: "Немає повідомлень для обробки" }), { status: 400 });
     }
 
     // Get the last user message to generate embedding
