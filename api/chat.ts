@@ -120,32 +120,64 @@ export default async function handler(req: Request) {
       ragContext = documents.map((doc: any) => doc.content).join('\n\n');
     }
 
-    console.log("Starting streamText...");
+    console.log("Starting manual Google SDK stream...");
 
     // System prompt with context injected
-    const systemPrompt = `Ти — привітний та експертний менеджер магазину воріт. Твоя мета — консультувати клієнтів простою і зрозумілою мовою. Ти не робот, а жива людина. Ніколи не вигадуй ціни та характеристики! Використовуй тільки ту інформацію, яку знайдеш у базі знань. Якщо інформації немає — чесно скажи, що уточниш це питання.
+    const systemPrompt = `Ти досвідчений інженер-консультант з продажу та підбору воріт і фурнітури для відкатних воріт. Твоя мета — проконсультувати клієнта та допомогти йому обрати комплектуючі. Будь ввічливим, лаконічним. Ніколи не придумуй ціни, яких немає в прайсі! Використовуй тільки інформацію, що надана тобі у контексті нижче. Якщо інформації немає в контексті, скажи "На жаль, я не маю точної інформації про це".
 
-=== ПОТОЧНИЙ ВИБІР КЛІЄНТА (З КАЛЬКУЛЯТОРА) ===
-Ширина воріт: ${context?.gateWidth || 'Не вказано'} м
+=== ОБРАНІ ПАРАМЕТРИ ВОРІТ (з калькулятора) ===
+Ширина в'їзду: ${context?.gateWidth || 'Не вказано'} м
 Вага воріт (орієнтовно): ${context?.gateWeight || 'Не вказано'} кг
-Поточний вибраний двигун: ${context?.selectedEngine || 'Не вибрано'}
-Поточна вибрана фурнітура: ${context?.selectedHardware || 'Не вибрано'}
+Обраний мотор автоматики: ${context?.selectedEngine || 'Не обрано'}
+Обрана фурнітура (направляюча): ${context?.selectedHardware || 'Не обрано'}
 
-=== БАЗА ЗНАНЬ (ДОВІДКОВА ІНФОРМАЦІЯ З БАЗИ) ===
-${ragContext ? ragContext : "Інформація не знайдена."}
+=== БАЗА ЗНАНЬ (інформація з бази) ===
+${ragContext ? ragContext : "Інформація відсутня."}
 
-Якщо питання стосується технічних характеристик, використовуйте БАЗУ ЗНАНЬ.
-Якщо клієнт запитує "чи підійде мені цей двигун?", порівняйте максимальну вагу двигуна з "Поточним вибором клієнта".
+Ти маєш відповідати виключно українською мовою.
+Якщо користувач питає "Що порадиш вибрати?", порадь найкраще для його обраних параметрів.
 `;
 
-    // Stream response using Vercel AI SDK
-    const result = await streamText({
-      model: google('gemini-2.5-flash') as any,
-      messages: messages,
-      system: systemPrompt,
+    const { GoogleGenerativeAI } = await import('@google/generative-ai');
+    const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY || '');
+    
+    const model = genAI.getGenerativeModel({
+      model: 'gemini-2.5-flash',
+      systemInstruction: systemPrompt
     });
 
-    return result.toTextStreamResponse();
+    const history = messages.slice(0, -1).map((m: any) => ({
+      role: m.role === 'user' ? 'user' : 'model',
+      parts: [{ text: m.content }]
+    }));
+    const lastMessageText = messages[messages.length - 1].content;
+
+    const chat = model.startChat({ history });
+    const result = await chat.sendMessageStream(lastMessageText);
+
+    const stream = new ReadableStream({
+      async start(controller) {
+        try {
+          for await (const chunk of result.stream) {
+            const chunkText = chunk.text();
+            if (chunkText) {
+              controller.enqueue(new TextEncoder().encode(`0:${JSON.stringify(chunkText)}\n`));
+            }
+          }
+          controller.close();
+        } catch (e: any) {
+          controller.enqueue(new TextEncoder().encode(`3:${JSON.stringify(e.message)}\n`));
+          controller.close();
+        }
+      }
+    });
+
+    return new Response(stream, {
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'x-vercel-ai-data-stream': 'v1'
+      }
+    });
   } catch (error: any) {
     console.error('Chat API Error:', error);
     return new Response(JSON.stringify({ error: error.message }), { status: 500 });
