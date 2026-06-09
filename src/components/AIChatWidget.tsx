@@ -5,11 +5,7 @@ import { useChat as originalUseChat } from '@ai-sdk/react';
 // Обхід проблеми з типізацією useChat у новій версії SDK
 const useChat = originalUseChat as any;
 
-interface Message {
-  id: string;
-  role: string;
-  content: string;
-}
+
 
 interface AIChatWidgetProps {
   calculatorState: {
