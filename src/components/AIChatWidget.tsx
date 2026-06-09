@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Send, X, Bot } from 'lucide-react';
 import { useChat as originalUseChat } from '@ai-sdk/react';
 
@@ -43,33 +43,20 @@ export function AIChatWidget({ calculatorState, isSubmitted, isOpen, onOpen, onC
     context: { gateWidth, gateWeight, guideRailLength, selectedEngine, selectedHardware }
   }), [gateWidth, gateWeight, guideRailLength, selectedEngine, selectedHardware]);
 
-  const initialMessagesList = React.useMemo(() => [
-    {
-      id: '1',
-      role: 'assistant',
-      content: initialMessageContent,
-    }
-  ], [initialMessageContent]);
-
-  const { messages, setMessages, input, handleInputChange, handleSubmit, isLoading } = useChat({
+  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
     api: '/api/chat',
     body: chatBody,
-    initialMessages: initialMessagesList,
   });
 
-  // Оновлюємо вітальне повідомлення, якщо користувач змінив параметри, але ще не почав діалог
-  useEffect(() => {
-    const isChatEmpty = messages.length === 0;
-    const isOnlyGreeting = messages.length === 1 && messages[0].role === 'assistant';
-    
-    if (isChatEmpty || (isOnlyGreeting && messages[0].content !== initialMessageContent)) {
-      setMessages([{
-        id: 'welcome-message',
-        role: 'assistant',
-        content: initialMessageContent,
-      }]);
-    }
-  }, [initialMessageContent, messages, setMessages]);
+  // Відображаємо динамічне привітання завжди першим, не втручаючись у внутрішній стан useChat
+  const displayMessages = [
+    {
+      id: 'welcome-message',
+      role: 'assistant',
+      content: initialMessageContent,
+    },
+    ...messages,
+  ];
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -115,7 +102,7 @@ export function AIChatWidget({ calculatorState, isSubmitted, isOpen, onOpen, onC
 
           {/* Chat area */}
           <div className="flex-1 p-4 overflow-y-auto space-y-4 text-sm bg-slate-50/50">
-            {messages.map((msg: Message) => (
+            {displayMessages.map((msg: any) => (
               <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 {msg.role !== 'user' && (
                   <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center shrink-0 mr-2 mt-1">
