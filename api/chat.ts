@@ -25,7 +25,7 @@ export default async function handler(req: Request) {
   }
 
   try {
-    const body = await req.json();
+    const body = typeof req.json === 'function' ? await req.json() : (req as any).body;
     console.log("Входящий body:", body);
     
     let { messages, context } = body || {};
