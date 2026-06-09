@@ -71,7 +71,7 @@ export default async function handler(req: Request) {
     try {
       console.log("Starting embed...");
       const { embedding: emb } = await withTimeout(embed({
-        model: google.textEmbeddingModel('text-embedding-004') as any,
+        model: google.textEmbeddingModel('gemini-embedding-2') as any,
         value: lastMessage.content,
       }), 5000, 'Embed API');
       embedding = emb;
@@ -140,7 +140,7 @@ ${ragContext ? ragContext : "Інформація не знайдена."}
 
     // Stream response using Vercel AI SDK
     const result = await streamText({
-      model: google('gemini-1.5-flash') as any,
+      model: google('gemini-2.5-flash') as any,
       messages: messages,
       system: systemPrompt,
     });
