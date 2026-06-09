@@ -1,6 +1,7 @@
-import { createGoogleGenerativeAI } from '@ai-sdk/google';
+import process from 'process';
 import { streamText, embed } from 'ai';
 import { createClient } from '@supabase/supabase-js';
+import { createGoogleGenerativeAI } from '@ai-sdk/google';
 
 // Setup Google Gen AI provider using the key from env
 const google = createGoogleGenerativeAI({
@@ -66,7 +67,7 @@ export default async function handler(req: Request) {
     try {
       console.log("Starting embed...");
       const { embedding: emb } = await withTimeout(embed({
-        model: google.textEmbeddingModel('text-embedding-004'),
+        model: google.textEmbeddingModel('text-embedding-004') as any,
         value: lastMessage.content,
       }), 5000, 'Embed API');
       embedding = emb;
@@ -88,11 +89,11 @@ export default async function handler(req: Request) {
       if (supabase) {
         try {
           console.log("Starting supabase query...");
-          const { data, error } = await withTimeout(supabase.rpc('match_documents', {
+          const { data, error } = (await withTimeout(supabase.rpc('match_documents', {
             query_embedding: embedding,
             match_threshold: 0.7, // Adjust as needed
             match_count: 5,
-          }), 5000, 'Supabase RPC');
+          }), 5000, 'Supabase RPC')) as any;
           
           documents = data;
 
@@ -135,7 +136,7 @@ ${ragContext ? ragContext : "Інформація не знайдена."}
 
     // Stream response using Vercel AI SDK
     const result = await streamText({
-      model: google('gemini-1.5-flash'),
+      model: google('gemini-1.5-flash') as any,
       messages: messages,
       system: systemPrompt,
     });
