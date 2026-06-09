@@ -59,11 +59,15 @@ export function AIChatWidget({ calculatorState, isSubmitted, isOpen, onOpen, onC
 
   const [text, setText] = useState('');
 
-  const onFormSubmit = (e: React.FormEvent) => {
+  const onFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!text.trim() || isLoading) return;
-    append({ role: 'user', content: text });
-    setText('');
+    try {
+      await append({ role: 'user', content: text });
+      setText(''); // Очищаємо поле після успішної відправки
+    } catch (error) {
+      console.error("Помилка відправки повідомлення:", error);
+    }
   };
 
   // Оновлюємо вітальне повідомлення, якщо користувач змінив параметри, але ще не почав діалог
