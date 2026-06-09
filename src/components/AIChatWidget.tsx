@@ -36,7 +36,7 @@ export function AIChatWidget({ calculatorState, isSubmitted, isOpen, onOpen, onC
     context: { gateWidth, gateWeight, guideRailLength, selectedEngine, selectedHardware }
   }), [gateWidth, gateWeight, guideRailLength, selectedEngine, selectedHardware]);
 
-  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
+  const { messages, input, handleInputChange, handleSubmit, isLoading, error } = useChat({
     api: '/api/chat',
     body: chatBody,
   });
@@ -120,7 +120,6 @@ export function AIChatWidget({ calculatorState, isSubmitted, isOpen, onOpen, onC
               </div>
             ))}
             
-            {/* Typing Indicator */}
             {isLoading && (
               <div className="flex justify-start">
                 <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center shrink-0 mr-2 mt-1">
@@ -130,6 +129,13 @@ export function AIChatWidget({ calculatorState, isSubmitted, isOpen, onOpen, onC
                   <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce" />
                   <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce [animation-delay:0.2s]" />
                   <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce [animation-delay:0.4s]" />
+                </div>
+              </div>
+            )}
+            {error && (
+              <div className="flex justify-center p-3">
+                <div className="bg-red-50 text-red-600 text-xs px-3 py-2 rounded-lg border border-red-100 max-w-[90%] text-center">
+                  Помилка: {error.message}
                 </div>
               </div>
             )}

@@ -8,10 +8,13 @@ const google = createGoogleGenerativeAI({
 });
 
 // Setup Supabase Client
-const supabase = createClient(
-  process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || '',
-  process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || ''
-);
+let supabase: any = null;
+const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
+const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
+
+if (supabaseUrl && supabaseKey) {
+  supabase = createClient(supabaseUrl, supabaseKey);
+}
 
 export const maxDuration = 30; // Max execution time for vercel function
 
@@ -72,16 +75,20 @@ export default async function handler(req: Request) {
       }
 
       // Query Supabase for similar context
-      const { data, error } = await supabase.rpc('match_documents', {
-        query_embedding: embedding,
-        match_threshold: 0.7, // Adjust as needed
-        match_count: 5,
-      });
-      
-      documents = data;
+      if (supabase) {
+        const { data, error } = await supabase.rpc('match_documents', {
+          query_embedding: embedding,
+          match_threshold: 0.7, // Adjust as needed
+          match_count: 5,
+        });
+        
+        documents = data;
 
-      if (error) {
-        console.error('Supabase match error:', error);
+        if (error) {
+          console.error('Supabase match error:', error);
+        }
+      } else {
+        console.warn('Supabase not configured, skipping context retrieval.');
       }
     }
 
