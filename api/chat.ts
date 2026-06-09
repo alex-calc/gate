@@ -50,19 +50,29 @@ export default async function handler(req: Request) {
       return new Response(JSON.stringify({ error: "Немає повідомлень для обробки" }), { status: 400 });
     }
 
+    // Helper to prevent infinite hangs
+    const withTimeout = <T>(promise: Promise<T>, ms: number, label: string): Promise<T> => {
+      return Promise.race([
+        promise,
+        new Promise<T>((_, reject) => setTimeout(() => reject(new Error(`Timeout: ${label}`)), ms))
+      ]);
+    };
+
     // Get the last user message to generate embedding
     const lastMessage = messages[messages.length - 1];
     
     // Generate embedding for user query using Google's embedding model
     let embedding = null;
     try {
-      const { embedding: emb } = await embed({
+      console.log("Starting embed...");
+      const { embedding: emb } = await withTimeout(embed({
         model: google.textEmbeddingModel('text-embedding-004'),
         value: lastMessage.content,
-      });
+      }), 5000, 'Embed API');
       embedding = emb;
-    } catch (embError) {
-      console.error('Embedding failed, continuing without context:', embError);
+      console.log("Embed successful.");
+    } catch (embError: any) {
+      console.error('Embedding failed or timed out:', embError.message);
     }
 
     let documents = null;
@@ -76,16 +86,23 @@ export default async function handler(req: Request) {
 
       // Query Supabase for similar context
       if (supabase) {
-        const { data, error } = await supabase.rpc('match_documents', {
-          query_embedding: embedding,
-          match_threshold: 0.7, // Adjust as needed
-          match_count: 5,
-        });
-        
-        documents = data;
+        try {
+          console.log("Starting supabase query...");
+          const { data, error } = await withTimeout(supabase.rpc('match_documents', {
+            query_embedding: embedding,
+            match_threshold: 0.7, // Adjust as needed
+            match_count: 5,
+          }), 5000, 'Supabase RPC');
+          
+          documents = data;
 
-        if (error) {
-          console.error('Supabase match error:', error);
+          if (error) {
+            console.error('Supabase match error:', error);
+          } else {
+            console.log("Supabase query successful.");
+          }
+        } catch (supaError: any) {
+          console.error('Supabase query failed or timed out:', supaError.message);
         }
       } else {
         console.warn('Supabase not configured, skipping context retrieval.');
@@ -97,6 +114,8 @@ export default async function handler(req: Request) {
     if (documents && documents.length > 0) {
       ragContext = documents.map((doc: any) => doc.content).join('\n\n');
     }
+
+    console.log("Starting streamText...");
 
     // System prompt with context injected
     const systemPrompt = `Ти — привітний та експертний менеджер магазину воріт. Твоя мета — консультувати клієнтів простою і зрозумілою мовою. Ти не робот, а жива людина. Ніколи не вигадуй ціни та характеристики! Використовуй тільки ту інформацію, яку знайдеш у базі знань. Якщо інформації немає — чесно скажи, що уточниш це питання.
