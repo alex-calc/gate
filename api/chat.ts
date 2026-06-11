@@ -70,11 +70,16 @@ export default async function handler(req: Request) {
     let embedding = null;
     try {
       console.log("Starting embed...");
-      const { embedding: emb } = await withTimeout(embed({
-        model: google.textEmbeddingModel('gemini-embedding-2') as any,
-        value: lastMessage.content,
+      const { GoogleGenerativeAI } = await import('@google/generative-ai');
+      const genAIEmbed = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY || '');
+      const embedModel = genAIEmbed.getGenerativeModel({ model: 'gemini-embedding-001' });
+      
+      const result = await withTimeout(embedModel.embedContent({
+        content: { parts: [{ text: lastMessage.content.replace(/\n/g, ' ') }] },
+        taskType: 'RETRIEVAL_QUERY'
       }), 5000, 'Embed API');
-      embedding = emb;
+      
+      embedding = result.embedding.values;
       console.log("Embed successful.");
     } catch (embError: any) {
       console.error('Embedding failed or timed out:', embError.message);
