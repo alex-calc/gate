@@ -94,7 +94,7 @@ export function AIChatWidget({ calculatorState, isSubmitted, isOpen, onOpen, onC
           </div>
 
           {/* Chat area */}
-          <div className="flex-1 min-h-0 p-4 overflow-y-auto overscroll-contain space-y-4 text-sm bg-slate-50/50">
+          <div className="flex-1 min-h-0 p-4 overflow-y-auto overscroll-contain space-y-4 text-sm bg-slate-50/50" data-lenis-prevent>
             {displayMessages.map((msg: any) => (
               <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 {msg.role !== 'user' && (
