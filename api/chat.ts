@@ -98,7 +98,7 @@ export default async function handler(req: Request) {
       if (supabase) {
         try {
           console.log("Starting supabase query...");
-          const { data, error } = (await withTimeout(supabase.rpc('match_documents', {
+          const { data, error } = (await withTimeout(supabase.rpc('match_gate_knowledge', {
             query_embedding: embedding,
             match_threshold: 0.7, // Adjust as needed
             match_count: 5,
