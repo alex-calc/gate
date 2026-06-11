@@ -158,11 +158,11 @@ ${ragContext ? ragContext : "Інформація відсутня."}
     const lastMessageText = messages[messages.length - 1].content;
 
     const chat = model.startChat({ history });
-    const result = await chat.sendMessageStream(lastMessageText);
 
     const stream = new ReadableStream({
       async start(controller) {
         try {
+          const result = await chat.sendMessageStream(lastMessageText);
           for await (const chunk of result.stream) {
             const chunkText = chunk.text();
             if (chunkText) {
@@ -186,11 +186,16 @@ ${ragContext ? ragContext : "Інформація відсутня."}
     return new Response(stream, {
       headers: {
         'Content-Type': 'text/plain; charset=utf-8',
-        'x-vercel-ai-data-stream': 'v1'
+        'Transfer-Encoding': 'chunked',
+        'Cache-Control': 'no-cache, no-transform'
       }
     });
+
   } catch (error: any) {
     console.error('Chat API Error:', error);
-    return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 }
