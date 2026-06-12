@@ -65,6 +65,16 @@ export default async function handler(req: Request) {
 
     // Get the last user message to generate embedding
     const lastMessage = messages[messages.length - 1];
+    const sessionId = body.sessionId || 'anonymous_session';
+
+    // Log the user's message to Supabase
+    if (supabase) {
+      supabase.from('chat_logs').insert({
+        session_id: sessionId,
+        role: 'user',
+        content: lastMessage.content
+      }).then(({error}: any) => { if (error) console.error("Error logging user message:", error); });
+    }
     
     // Generate embedding for user query using Google's embedding model
     let embedding = null;
@@ -163,12 +173,25 @@ ${ragContext ? ragContext : "Інформація відсутня."}
       async start(controller) {
         try {
           const result = await chat.sendMessageStream(lastMessageText);
+          let fullBotResponse = '';
+
           for await (const chunk of result.stream) {
             const chunkText = chunk.text();
             if (chunkText) {
+              fullBotResponse += chunkText;
               controller.enqueue(new TextEncoder().encode(`0:${JSON.stringify(chunkText)}\n`));
             }
           }
+
+          // Log the bot's full response to Supabase
+          if (supabase && fullBotResponse) {
+            supabase.from('chat_logs').insert({
+              session_id: sessionId,
+              role: 'model',
+              content: fullBotResponse
+            }).then(({error}: any) => { if (error) console.error("Error logging model message:", error); });
+          }
+
           controller.close();
         } catch (e: any) {
           const errorMessage = e.message || '';

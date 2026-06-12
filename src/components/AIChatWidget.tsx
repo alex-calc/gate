@@ -20,6 +20,7 @@ interface AIChatWidgetProps {
 
 export function AIChatWidget({ calculatorState, isSubmitted, isOpen, onOpen, onClose }: AIChatWidgetProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const sessionIdRef = useRef<string>(crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(7));
 
   const { gateWidth, gateWeight, guideRailLength, selectedEngine, selectedHardware } = calculatorState;
 
@@ -33,6 +34,7 @@ export function AIChatWidget({ calculatorState, isSubmitted, isOpen, onOpen, onC
   }, [gateWidth, gateWeight, guideRailLength]);
 
   const chatBody = React.useMemo(() => ({
+    sessionId: sessionIdRef.current,
     context: { gateWidth, gateWeight, guideRailLength, selectedEngine, selectedHardware }
   }), [gateWidth, gateWeight, guideRailLength, selectedEngine, selectedHardware]);
 
