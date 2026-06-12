@@ -69,11 +69,15 @@ export default async function handler(req: Request) {
 
     // Log the user's message to Supabase
     if (supabase) {
-      supabase.from('chat_logs').insert({
-        session_id: sessionId,
-        role: 'user',
-        content: lastMessage.content
-      }).then(({error}: any) => { if (error) console.error("Error logging user message:", error); });
+      try {
+        await supabase.from('chat_logs').insert({
+          session_id: sessionId,
+          role: 'user',
+          content: lastMessage.content
+        });
+      } catch (err) {
+        console.error("Error logging user message:", err);
+      }
     }
     
     // Generate embedding for user query using Google's embedding model
@@ -185,11 +189,15 @@ ${ragContext ? ragContext : "Інформація відсутня."}
 
           // Log the bot's full response to Supabase
           if (supabase && fullBotResponse) {
-            supabase.from('chat_logs').insert({
-              session_id: sessionId,
-              role: 'model',
-              content: fullBotResponse
-            }).then(({error}: any) => { if (error) console.error("Error logging model message:", error); });
+            try {
+              await supabase.from('chat_logs').insert({
+                session_id: sessionId,
+                role: 'model',
+                content: fullBotResponse
+              });
+            } catch (err) {
+              console.error("Error logging model message:", err);
+            }
           }
 
           controller.close();
