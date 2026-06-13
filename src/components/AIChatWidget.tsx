@@ -58,8 +58,23 @@ export function AIChatWidget({ calculatorState, isSubmitted, isOpen, onOpen, onC
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isLoading]);
 
+  const [isLocalSubmitted, setIsLocalSubmitted] = React.useState(false);
+  const showSuccess = isSubmitted || isLocalSubmitted;
+
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    // Regex for Ukrainian phone numbers (+380..., 380..., 095...) with or without spaces/dashes/parens
+    const phoneRegex = /(?:\+?38)?[\s\-]?\(?0\d{2}\)?[\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}/;
+    const digitCount = (input.match(/\d/g) || []).length;
+    
+    if (phoneRegex.test(input) || digitCount >= 10) {
+      setIsLocalSubmitted(true);
+    }
+    
+    handleSubmit(e);
+  };
+
   return (
-    <div className={`fixed right-4 sm:right-6 z-50 transition-all ${isSubmitted ? 'bottom-6' : 'bottom-24 md:bottom-6'}`}>
+    <div className={`fixed right-4 sm:right-6 z-50 transition-all ${showSuccess ? 'bottom-6' : 'bottom-24 md:bottom-6'}`}>
       {!isOpen ? (
         <button
           onClick={onOpen}
@@ -95,7 +110,7 @@ export function AIChatWidget({ calculatorState, isSubmitted, isOpen, onOpen, onC
             </button>
           </div>
 
-          {isSubmitted ? (
+          {showSuccess ? (
             <div className="flex-1 min-h-0 p-6 overflow-y-auto flex flex-col items-center text-center bg-slate-50 space-y-4">
               <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-1 shrink-0">
                 <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
@@ -180,7 +195,7 @@ export function AIChatWidget({ calculatorState, isSubmitted, isOpen, onOpen, onC
               </div>
 
               {/* Input Area */}
-              <form onSubmit={handleSubmit} className="p-3 bg-white border-t border-slate-200 flex gap-2">
+              <form onSubmit={handleFormSubmit} className="p-3 bg-white border-t border-slate-200 flex gap-2">
                 <input
                   value={input}
                   onChange={handleInputChange}
