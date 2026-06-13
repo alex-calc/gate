@@ -68,6 +68,21 @@ export function AIChatWidget({ calculatorState, isSubmitted, isOpen, onOpen, onC
     
     if (phoneRegex.test(input) || digitCount >= 10) {
       setIsLocalSubmitted(true);
+
+      const botToken = import.meta.env.VITE_TELEGRAM_BOT_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN';
+      const chatId = import.meta.env.VITE_TELEGRAM_CHAT_ID || 'YOUR_TELEGRAM_CHAT_ID';
+      
+      const text = `🤖 ЛІД З ШІ-ЧАТУ!\n📞 Телефон: ${input}\n📐 Ширина воріт в калькуляторі: ${gateWidth} м\n💬 Останній контекст діалогу: Клієнт залишив телефон в обмін на креслення воріт.`;
+
+      if (botToken !== 'YOUR_TELEGRAM_BOT_TOKEN') {
+        fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: chatId, text: text })
+        }).catch(err => console.error('Telegram error', err));
+      } else {
+        console.log("Mock Telegram Send:\n", text);
+      }
     }
     
     handleSubmit(e);
