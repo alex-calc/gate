@@ -910,7 +910,30 @@ export default function App() {
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-400 to-emerald-600"></div>
                 <CheckCircle2 className="w-12 h-12 mx-auto mb-4 text-emerald-500 bg-white rounded-full p-1 shadow-sm" />
                 <h4 className="font-extrabold text-xl sm:text-2xl mb-2 text-emerald-900">Дякуємо! Ваша заявка прийнята.</h4>
-                <p className="font-medium mt-2 text-emerald-800/80 mb-6">Менеджер вже готує індивідуальне креслення та PDF-інструкцію!</p>
+                <p className="font-medium mt-2 text-emerald-800/80 mb-3">Менеджер вже готує пропозицію та зв'яжеться з вами.</p>
+                <div className="bg-emerald-100/50 text-emerald-900 p-4 rounded-xl border border-emerald-200 mb-6 text-sm font-medium">
+                  <div className="mb-3">🎁 Як і обіцяли, забирайте ваш повний пакет технічної документації прямо зараз:</div>
+                  <div className="flex flex-col gap-2.5 w-full">
+                    <a 
+                      href="https://drive.google.com/file/d/1zQyqtbKL4bTtohPNQuT5i9XvguLnxbXa/view?usp=sharing" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="bg-blue-600 hover:bg-blue-700 text-white text-[13px] font-bold py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 group"
+                    >
+                      <span className="text-xl shrink-0 group-hover:-translate-y-0.5 transition-transform">📥</span> 
+                      <span className="text-left leading-tight">Завантажити схему монтажу воріт та автоматики</span>
+                    </a>
+                    <a 
+                      href="https://drive.google.com/file/d/1P36xv4sgQhTCM_pj3tg_wCUIsX_EgSnf/view?usp=sharing" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="bg-emerald-600 hover:bg-emerald-700 text-white text-[13px] font-bold py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 group"
+                    >
+                      <span className="text-xl shrink-0 group-hover:-translate-y-0.5 transition-transform">📐</span>
+                      <span className="text-left leading-tight">Завантажити готове інженерне креслення каркаса</span>
+                    </a>
+                  </div>
+                </div>
                 
                 <div className="bg-white rounded-xl p-4 text-left shadow-sm border border-emerald-100">
                   <h5 className="font-bold text-slate-800 mb-3 flex items-center gap-2 border-b border-slate-100 pb-2">
