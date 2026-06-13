@@ -95,71 +95,108 @@ export function AIChatWidget({ calculatorState, isSubmitted, isOpen, onOpen, onC
             </button>
           </div>
 
-          {/* Chat area */}
-          <div className="flex-1 min-h-0 p-4 overflow-y-auto overscroll-contain space-y-4 text-sm bg-slate-50/50" data-lenis-prevent>
-            {displayMessages.map((msg: any) => (
-              <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                {msg.role !== 'user' && (
-                  <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center shrink-0 mr-2 mt-1">
-                    <Bot className="w-3.5 h-3.5 text-blue-600" />
+          {isSubmitted ? (
+            <div className="flex-1 min-h-0 p-6 overflow-y-auto flex flex-col items-center text-center bg-slate-50 space-y-4">
+              <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-1 shrink-0">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+              </div>
+              <div className="space-y-3 text-slate-700 text-sm">
+                <p className="font-semibold text-lg text-slate-900 leading-tight">Дякую!<br/>Ваш номер телефону зафіксовано.</p>
+                <p>Параметри розрахунку фурнітури та автоматики під ваш проріз <strong className="text-blue-600">{gateWidth} м</strong> збережено.</p>
+                <p className="bg-blue-50 text-blue-800 p-3 rounded-xl border border-blue-100">
+                  🎁 Як і обіцяли, тримайте повний пакет технічної документації для створення воріт своїми руками:
+                </p>
+              </div>
+              <div className="flex flex-col gap-3 w-full mt-2">
+                <a 
+                  href="https://drive.google.com/file/d/1zQyqtbKL4bTtohPNQuT5i9XvguLnxbXa/view?usp=sharing" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="bg-blue-600 hover:bg-blue-700 text-white text-[13px] font-medium py-3 px-4 rounded-xl shadow-md transition-all flex items-center gap-2 group leading-tight"
+                >
+                  <span className="text-xl shrink-0 group-hover:-translate-y-0.5 transition-transform">📥</span> 
+                  <span className="text-left">Завантажити схему монтажу воріт та автоматики</span>
+                </a>
+                <a 
+                  href="https://drive.google.com/file/d/1P36xv4sgQhTCM_pj3tg_wCUIsX_EgSnf/view?usp=sharing" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white text-[13px] font-medium py-3 px-4 rounded-xl shadow-md transition-all flex items-center gap-2 group leading-tight"
+                >
+                  <span className="text-xl shrink-0 group-hover:-translate-y-0.5 transition-transform">📐</span>
+                  <span className="text-left">Завантажити готове інженерне креслення каркаса</span>
+                </a>
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* Chat area */}
+              <div className="flex-1 min-h-0 p-4 overflow-y-auto overscroll-contain space-y-4 text-sm bg-slate-50/50" data-lenis-prevent>
+                {displayMessages.map((msg: any) => (
+                  <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                    {msg.role !== 'user' && (
+                      <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center shrink-0 mr-2 mt-1">
+                        <Bot className="w-3.5 h-3.5 text-blue-600" />
+                      </div>
+                    )}
+                    <div
+                      className={`max-w-[80%] px-4 py-2.5 rounded-2xl leading-relaxed shadow-sm ${
+                        msg.role === 'user'
+                          ? 'bg-blue-600 text-white rounded-tr-sm font-medium'
+                          : 'bg-white border border-slate-200 text-slate-700 rounded-tl-sm'
+                      }`}
+                    >
+                      {/* Basic markdown-like rendering for bold text */}
+                      {(msg.content || '').split('\n').map((line: string, i: number) => (
+                        <React.Fragment key={i}>
+                          {line}
+                          {i !== (msg.content || '').split('\n').length - 1 && <br />}
+                        </React.Fragment>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+                
+                {isLoading && (
+                  <div className="flex justify-start">
+                    <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center shrink-0 mr-2 mt-1">
+                      <Bot className="w-3.5 h-3.5 text-blue-600" />
+                    </div>
+                    <div className="bg-white border border-slate-200 px-4 py-3 rounded-2xl rounded-tl-sm shadow-sm flex items-center gap-1.5">
+                      <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce" />
+                      <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce [animation-delay:0.2s]" />
+                      <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce [animation-delay:0.4s]" />
+                    </div>
                   </div>
                 )}
-                <div
-                  className={`max-w-[80%] px-4 py-2.5 rounded-2xl leading-relaxed shadow-sm ${
-                    msg.role === 'user'
-                      ? 'bg-blue-600 text-white rounded-tr-sm font-medium'
-                      : 'bg-white border border-slate-200 text-slate-700 rounded-tl-sm'
-                  }`}
-                >
-                  {/* Basic markdown-like rendering for bold text */}
-                  {(msg.content || '').split('\n').map((line: string, i: number) => (
-                    <React.Fragment key={i}>
-                      {line}
-                      {i !== (msg.content || '').split('\n').length - 1 && <br />}
-                    </React.Fragment>
-                  ))}
-                </div>
+                {error && (
+                  <div className="flex justify-center p-3">
+                    <div className="bg-red-50 text-red-600 text-xs px-3 py-2 rounded-lg border border-red-100 max-w-[90%] text-center">
+                      Помилка: {error.message}
+                    </div>
+                  </div>
+                )}
+                <div ref={messagesEndRef} />
               </div>
-            ))}
-            
-            {isLoading && (
-              <div className="flex justify-start">
-                <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center shrink-0 mr-2 mt-1">
-                  <Bot className="w-3.5 h-3.5 text-blue-600" />
-                </div>
-                <div className="bg-white border border-slate-200 px-4 py-3 rounded-2xl rounded-tl-sm shadow-sm flex items-center gap-1.5">
-                  <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce" />
-                  <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce [animation-delay:0.2s]" />
-                  <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce [animation-delay:0.4s]" />
-                </div>
-              </div>
-            )}
-            {error && (
-              <div className="flex justify-center p-3">
-                <div className="bg-red-50 text-red-600 text-xs px-3 py-2 rounded-lg border border-red-100 max-w-[90%] text-center">
-                  Помилка: {error.message}
-                </div>
-              </div>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
 
-          {/* Input Area */}
-          <form onSubmit={handleSubmit} className="p-3 bg-white border-t border-slate-200 flex gap-2">
-            <input
-              value={input}
-              onChange={handleInputChange}
-              placeholder="Запитати про редуктор, вагу, ціну..."
-              className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all placeholder:text-slate-400 disabled:opacity-50"
-            />
-            <button
-              type="submit"
-              disabled={!input || !input.trim() || isLoading}
-              className="bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white px-3 py-2 rounded-xl transition-all shadow-sm active:scale-95 flex items-center justify-center"
-            >
-              <Send className="w-4 h-4" />
-            </button>
-          </form>
+              {/* Input Area */}
+              <form onSubmit={handleSubmit} className="p-3 bg-white border-t border-slate-200 flex gap-2">
+                <input
+                  value={input}
+                  onChange={handleInputChange}
+                  placeholder="Запитати про редуктор, вагу, ціну..."
+                  className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all placeholder:text-slate-400 disabled:opacity-50"
+                />
+                <button
+                  type="submit"
+                  disabled={!input || !input.trim() || isLoading}
+                  className="bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white px-3 py-2 rounded-xl transition-all shadow-sm active:scale-95 flex items-center justify-center"
+                >
+                  <Send className="w-4 h-4" />
+                </button>
+              </form>
+            </>
+          )}
         </div>
       )}
     </div>
