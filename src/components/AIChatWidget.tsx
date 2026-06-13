@@ -117,9 +117,9 @@ export function AIChatWidget({ calculatorState, isSubmitted, isOpen, onOpen, onC
               </div>
               <div className="space-y-3 text-slate-700 text-sm">
                 <p className="font-semibold text-lg text-slate-900 leading-tight">Дякую!<br/>Ваш номер телефону зафіксовано.</p>
-                <p>Параметри розрахунку фурнітури та автоматики під ваш проріз <strong className="text-blue-600">{gateWidth} м</strong> збережено.</p>
+                <p>Параметри розрахунку фурнітури та автоматики під ваші ворота збережено.</p>
                 <p className="bg-blue-50 text-blue-800 p-3 rounded-xl border border-blue-100">
-                  🎁 Як і обіцяли, тримайте повний пакет технічної документації для створення воріт своїми руками:
+                  🎁 Як і обіцяли, тримайте повний пакет заводської технічної документації на 7-метровий каркас (оптимально для прорізів в'їзду 4-4.5м):
                 </p>
               </div>
               <div className="flex flex-col gap-3 w-full mt-2">
