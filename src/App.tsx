@@ -877,7 +877,7 @@ export default function App() {
                 {/* Маркетинг: Лид-магнит */}
                 <div className="text-[13px] text-slate-800 bg-amber-50 p-3.5 rounded-xl border border-amber-200 flex gap-2.5 items-start leading-relaxed font-medium mb-2 shadow-sm">
                   <Gift className="w-5 h-5 text-amber-600 shrink-0 mt-0.5 animate-bounce" />
-                  <span><strong>+ ПОДАРУНОК:</strong> Безкоштовне індивідуальне креслення під ваші розміри та PDF-інструкція з монтажу воріт!</span>
+                  <span><strong>+ ПОДАРУНОК:</strong> Безкоштовна інженерна схема монтажу та готове креслення каркаса воріт з таблицею порізки!</span>
                 </div>
 
                 <button type="submit"
