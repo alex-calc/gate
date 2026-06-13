@@ -345,7 +345,7 @@ export default function App() {
   const [gateWidth, setGateWidth] = useState(4);
   const [gateWeight, setGateWeight] = useState(400);
   const [selectedHardware, setSelectedHardware] = useState(HARDWARE_CATALOG[0].id);
-  const [selectedEngine, setSelectedEngine] = useState(ENGINES_CATALOG[0].id);
+  const [selectedEngine, setSelectedEngine] = useState('no-engine');
   const [includeWifi, setIncludeWifi] = useState(false);
   const [includeSafety, setIncludeSafety] = useState(true);
 
