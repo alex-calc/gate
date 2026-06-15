@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { Send, X, Bot } from 'lucide-react';
+import { Send, X } from 'lucide-react';
 import { useChat } from 'ai/react';
 
 
