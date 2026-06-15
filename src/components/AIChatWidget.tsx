@@ -74,7 +74,7 @@ export function AIChatWidget({ calculatorState, isSubmitted, isOpen, locale, onO
       msg += isRu 
         ? ` Наш офис сейчас отдыхает, но я работаю 24/7. Давайте просчитаю ваши ворота прямо сейчас, а менеджер свяжется с вами уже утром!`
         : ` Наш офіс зараз відпочиває, але я працюю 24/7. Давайте прорахую ваші ворота прямо зараз, а менеджер зв'яжеться з вами вже вранці!`;
-
+    }
     
     return msg.trim();
   }, [gateWidth, gateWeight, guideRailLength, utmCampaign, isNightTime, locale]);
