@@ -447,7 +447,7 @@ export default function App() {
   const toothRackPrice = isNoEngine ? 0 : toothRackLength * 350;
   
   const hasBuiltInWifi = currentEngine.id.includes('edinger') || currentEngine.id === 'rotelli-1100';
-  const wifiPrice = (includeWifi && !hasBuiltInWifi && !isNoEngine) ? 600 : 0;
+  const wifiPrice = (includeWifi && !hasBuiltInWifi && !isNoEngine) ? 1500 : 0;
   const safetyPrice = (includeSafety && !isNoEngine) ? 1500 : 0;
   const totalPrice = hardwarePrice + currentEngine.basePrice + toothRackPrice + wifiPrice + safetyPrice;
   const retailPrice = Math.round(totalPrice * 1.15);
@@ -487,7 +487,7 @@ export default function App() {
     const chatId = import.meta.env.VITE_TELEGRAM_CHAT_ID || 'YOUR_TELEGRAM_CHAT_ID';
 
     const selectedWeightCategory = gateWeight === 300 ? 'Легкі (Профнастил, сітка)' : gateWeight === 500 ? 'Середні (Дерево, метал)' : 'Важкі (Ковка, фільонка)';
-    const wifiStatus = hasBuiltInWifi && !isNoEngine ? 'Вбудовано (0 ₴)' : includeWifi && !isNoEngine ? 'Так (600 ₴)' : 'Ні';
+    const wifiStatus = hasBuiltInWifi && !isNoEngine ? 'Вбудований (0 ₴)' : includeWifi && !isNoEngine ? 'Так (1500 ₴)' : 'Ні';
     const safetyStatus = includeSafety && !isNoEngine ? 'Так (1500 ₴)' : 'Ні';
     
     const text = `🚀 НОВИЙ ЛІД З КАЛЬКУЛЯТОРА ВОРІТ
@@ -770,7 +770,7 @@ export default function App() {
                       setter: setIncludeWifi, 
                       label: 'Управління зі смартфона (Wi-Fi/GSM)', 
                       sub: hasBuiltInWifi ? 'Вбудований Wi-Fi модуль! Керуйте воротами зі смартфона (до 10 користувачів безкоштовно)' : 'Відкривайте ворота додатком з будь-якої точки', 
-                      price: hasBuiltInWifi ? 'Вбудовано' : '+600 ₴', 
+                      price: hasBuiltInWifi ? 'Вбудований' : '+1500 ₴', 
                       badge: hasBuiltInWifi ? 'БЕЗКОШТОВНО' : 'ХІТ',
                       disabled: hasBuiltInWifi || isNoEngine
                     },
@@ -823,7 +823,7 @@ export default function App() {
                 { label: isNoHardware ? 'Фурнітура:' : `Фурнітура ${currentHardware.name.split(' ')[2] || ''} (рельс ${guideRailLength} м):`, value: isNoHardware ? 'Не потрібна (0 ₴)' : hardwarePrice },
                 { label: 'Привід автоматики:', value: isNoEngine ? 'Не потрібен (0 ₴)' : currentEngine.basePrice },
                 { label: isNoEngine ? 'Зубчаста рейка:' : `Зубчаста рейка (${toothRackLength} м):`, value: isNoEngine ? 'Не потрібна (0 ₴)' : toothRackPrice },
-                ...((includeWifi && !hasBuiltInWifi && !isNoEngine) ? [{ label: 'Смарт-модуль Wi-Fi:', value: 600 }] : []),
+                ...((includeWifi && !hasBuiltInWifi && !isNoEngine) ? [{ label: 'Доп. Wi-Fi:', value: 1500 }] : []),
                 ...(includeSafety && !isNoEngine ? [{ label: 'Комплект безпеки:', value: 1500 }] : []),
               ].map((row, i) => (
                 <div key={i} className="flex justify-between text-sm">
