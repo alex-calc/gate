@@ -22,21 +22,55 @@ export function AIChatWidget({ calculatorState, isSubmitted, isOpen, onOpen, onC
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const sessionIdRef = useRef<string>(crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(7));
 
+  const [utmCampaign, setUtmCampaign] = React.useState<string>('');
+  const [isNightTime, setIsNightTime] = React.useState<boolean>(false);
+  const hasAutoOpened = useRef(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setUtmCampaign(params.get('utm_campaign') || '');
+    
+    const hour = new Date().getHours();
+    setIsNightTime(hour >= 21 || hour < 8);
+
+    const timer = setTimeout(() => {
+      if (!hasAutoOpened.current) {
+        hasAutoOpened.current = true;
+        onOpen();
+      }
+    }, 8000);
+
+    return () => clearTimeout(timer);
+  }, [onOpen]);
+
   const { gateWidth, gateWeight, guideRailLength, selectedEngine, selectedHardware } = calculatorState;
 
   const initialMessageContent = React.useMemo(() => {
-    const material = gateWeight === 300 ? 'профнастилу або сітки' : gateWeight === 500 ? 'дерева або металу' : 'ковки або фільонки';
-    
-    if (gateWidth > 4 || gateWeight >= 1000) {
-      return `Вітаю! 👋 Бачу, ви придивляєтесь до воріт на ${gateWidth} метрів (${material}). Для таких габаритів я б радив посилену направляючу на ${guideRailLength} м, щоб стулка не провисала з часом. Підказати, які варіанти моторів і фурнітури у нас є для такої ваги?`;
+    let msg = '';
+    if (utmCampaign === 'furnitura') {
+      msg = 'Привіт! Бачу, ви підбираєте надійну фурнітуру... ';
+    } else if (utmCampaign === 'automatika') {
+      msg = 'Привіт! Допомогти обрати надійну автоматику з металевим редуктором... ';
+    } else {
+      const material = gateWeight === 300 ? 'профнастилу або сітки' : gateWeight === 500 ? 'дерева або металу' : 'ковки або фільонки';
+      if (gateWidth > 4 || gateWeight >= 1000) {
+        msg = `Вітаю! 👋 Бачу, ви придивляєтесь до воріт на ${gateWidth} метрів (${material}). Для таких габаритів я б радив посилену направляючу на ${guideRailLength} м, щоб стулка не провисала з часом. Підказати, які варіанти моторів і фурнітури у нас є для такої ваги? `;
+      } else {
+        msg = `Привіт! 👋 Бачу, ви плануєте акуратні ворота на ${gateWidth} метрів з ${material}. Сюди ідеально підійде направляюча на ${guideRailLength} м. Допоможу підібрати надійну автоматику, щоб працювала без проблем у будь-які морози. Які у вас запитання? `;
+      }
     }
-    return `Привіт! 👋 Бачу, ви плануєте акуратні ворота на ${gateWidth} метрів з ${material}. Сюди ідеально підійде направляюча на ${guideRailLength} м. Допоможу підібрати надійну автоматику, щоб працювала без проблем у будь-які морози. Які у вас запитання?`;
-  }, [gateWidth, gateWeight, guideRailLength]);
+
+    if (isNightTime) {
+      msg += 'Наш офіс зараз відпочиває, але я, як ШІ-інженер, працюю 24/7. Давайте прорахую ваші ворота прямо зараз, а менеджер зв'яжеться з вами вже вранці!';
+    }
+    
+    return msg.trim();
+  }, [gateWidth, gateWeight, guideRailLength, utmCampaign, isNightTime]);
 
   const chatBody = React.useMemo(() => ({
     sessionId: sessionIdRef.current,
-    context: { gateWidth, gateWeight, guideRailLength, selectedEngine, selectedHardware }
-  }), [gateWidth, gateWeight, guideRailLength, selectedEngine, selectedHardware]);
+    context: { gateWidth, gateWeight, guideRailLength, selectedEngine, selectedHardware, utmCampaign, isNightTime }
+  }), [gateWidth, gateWeight, guideRailLength, selectedEngine, selectedHardware, utmCampaign, isNightTime]);
 
   const { messages, input, handleInputChange, handleSubmit, isLoading, error } = useChat({
     api: '/api/chat',
