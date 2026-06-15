@@ -195,7 +195,7 @@ export function AIChatWidget({ calculatorState, isSubmitted, isOpen, onOpen, onC
           ) : (
             <>
               {/* Chat area */}
-              <div className="flex-1 min-h-0 p-4 overflow-y-auto overscroll-contain space-y-4 text-sm bg-slate-50/50" data-lenis-prevent>
+              <div className="flex-1 min-h-0 p-4 overflow-y-auto overscroll-contain space-y-4 text-[15px] bg-slate-50/50 antialiased subpixel-antialiased" data-lenis-prevent>
                 {displayMessages.map((msg: any) => (
                   <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                     {msg.role !== 'user' && (
@@ -207,7 +207,7 @@ export function AIChatWidget({ calculatorState, isSubmitted, isOpen, onOpen, onC
                       className={`max-w-[80%] px-4 py-2.5 rounded-2xl leading-relaxed shadow-sm ${
                         msg.role === 'user'
                           ? 'bg-blue-600 text-white rounded-tr-sm font-medium'
-                          : 'bg-white border border-slate-200 text-slate-700 rounded-tl-sm'
+                          : 'bg-white border border-slate-200 text-slate-900 rounded-tl-sm'
                       }`}
                     >
                       {/* Basic markdown-like rendering for bold text */}
