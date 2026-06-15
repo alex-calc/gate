@@ -14,11 +14,12 @@ interface AIChatWidgetProps {
   };
   isSubmitted: boolean;
   isOpen: boolean;
+  locale: string;
   onOpen: () => void;
   onClose: () => void;
 }
 
-export function AIChatWidget({ calculatorState, isSubmitted, isOpen, onOpen, onClose }: AIChatWidgetProps) {
+export function AIChatWidget({ calculatorState, isSubmitted, isOpen, locale, onOpen, onClose }: AIChatWidgetProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const sessionIdRef = useRef<string>(crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(7));
 
@@ -47,30 +48,42 @@ export function AIChatWidget({ calculatorState, isSubmitted, isOpen, onOpen, onC
 
   const initialMessageContent = React.useMemo(() => {
     let msg = '';
+    const isRu = locale === 'ru';
     if (utmCampaign === 'furnitura') {
-      msg = 'Привіт! Бачу, ви підбираєте надійну фурнітуру... ';
+      msg = isRu ? 'Привет! Вижу, вы подбираете надежную фурнитуру... ' : 'Привіт! Бачу, ви підбираєте надійну фурнітуру... ';
     } else if (utmCampaign === 'automatika') {
-      msg = 'Привіт! Допомогти обрати надійну автоматику з металевим редуктором... ';
+      msg = isRu ? 'Привет! Помочь выбрать надежную автоматику с металлическим редуктором... ' : 'Привіт! Допомогти обрати надійну автоматику з металевим редуктором... ';
     } else {
-      const material = gateWeight === 300 ? 'профнастилу або сітки' : gateWeight === 500 ? 'дерева або металу' : 'ковки або фільонки';
+      const material = gateWeight === 300 
+        ? (isRu ? 'профнастила или сетки' : 'профнастилу або сітки') 
+        : gateWeight === 500 
+          ? (isRu ? 'дерева или металла' : 'дерева або металу') 
+          : (isRu ? 'ковки или филенки' : 'ковки або фільонки');
       if (gateWidth > 4 || gateWeight >= 1000) {
-        msg = `Вітаю! 👋 Бачу, ви придивляєтесь до воріт на ${gateWidth} метрів (${material}). Для таких габаритів я б радив посилену направляючу на ${guideRailLength} м, щоб стулка не провисала з часом. Підказати, які варіанти моторів і фурнітури у нас є для такої ваги? `;
+        msg = isRu 
+          ? `Приветствую! 👋 Вижу, вы присматриваетесь к воротам на ${gateWidth} метров (${material}). Для таких габаритов я бы советовал усиленную направляющую на ${guideRailLength} м, чтобы створка не провисала со временем. Подсказать, какие варианты моторов и фурнитуры у нас есть для такого веса? `
+          : `Вітаю! 👋 Бачу, ви придивляєтесь до воріт на ${gateWidth} метрів (${material}). Для таких габаритов я б радив посилену направляючу на ${guideRailLength} м, щоб стулка не провисала з часом. Підказати, які варіанти моторів і фурнітури у нас є для такої ваги? `;
       } else {
-        msg = `Привіт! 👋 Бачу, ви плануєте акуратні ворота на ${gateWidth} метрів з ${material}. Сюди ідеально підійде направляюча на ${guideRailLength} м. Допоможу підібрати надійну автоматику, щоб працювала без проблем у будь-які морози. Які у вас запитання? `;
+        msg = isRu
+          ? `Привет! 👋 Вижу, вы планируете аккуратные ворота на ${gateWidth} метров из ${material}. Сюда идеально подойдет направляющая на ${guideRailLength} м. Помогу подобрать надежную автоматику, чтобы работала без проблем в любые морозы. Какие у вас вопросы? `
+          : `Привіт! 👋 Бачу, ви плануєте акуратні ворота на ${gateWidth} метрів з ${material}. Сюди ідеально підійде направляюча на ${guideRailLength} м. Допоможу підібрати надійну автоматику, щоб працювала без проблем у будь-які морози. Які у вас запитання? `;
       }
     }
 
     if (isNightTime) {
-      msg += `Наш офіс зараз відпочиває, але я, як ШІ-інженер, працюю 24/7. Давайте прорахую ваші ворота прямо зараз, а менеджер зв'яжеться з вами вже вранці!`;
+      msg += isRu 
+        ? `Наш офис сейчас отдыхает, но я, как ИИ-инженер, работаю 24/7. Давайте просчитаю ваши ворота прямо сейчас, а менеджер свяжется с вами уже утром!`
+        : `Наш офіс зараз відпочиває, але я, як ШІ-інженер, працюю 24/7. Давайте прорахую ваші ворота прямо зараз, а менеджер зв'яжеться з вами вже вранці!`;
     }
     
     return msg.trim();
-  }, [gateWidth, gateWeight, guideRailLength, utmCampaign, isNightTime]);
+  }, [gateWidth, gateWeight, guideRailLength, utmCampaign, isNightTime, locale]);
 
   const chatBody = React.useMemo(() => ({
     sessionId: sessionIdRef.current,
+    locale,
     context: { gateWidth, gateWeight, guideRailLength, selectedEngine, selectedHardware, utmCampaign, isNightTime }
-  }), [gateWidth, gateWeight, guideRailLength, selectedEngine, selectedHardware, utmCampaign, isNightTime]);
+  }), [gateWidth, gateWeight, guideRailLength, selectedEngine, selectedHardware, utmCampaign, isNightTime, locale]);
 
   const { messages, input, handleInputChange, handleSubmit, isLoading, error } = useChat({
     api: '/api/chat',
