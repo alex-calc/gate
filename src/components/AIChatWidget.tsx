@@ -34,14 +34,31 @@ export function AIChatWidget({ calculatorState, isSubmitted, isOpen, locale, onO
     const hour = new Date().getHours();
     setIsNightTime(hour >= 21 || hour < 8);
 
-    const timer = setTimeout(() => {
+    const openChat = () => {
       if (!hasAutoOpened.current) {
         hasAutoOpened.current = true;
         onOpen();
       }
-    }, 8000);
+    };
 
-    return () => clearTimeout(timer);
+    const timer = setTimeout(openChat, 25000);
+
+    const handleScroll = () => {
+      if (hasAutoOpened.current) return;
+      const scrollY = window.scrollY;
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (scrollHeight > 0 && (scrollY / scrollHeight) >= 0.4) {
+        openChat();
+        window.removeEventListener('scroll', handleScroll);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, [onOpen]);
 
   const { gateWidth, gateWeight, guideRailLength, selectedEngine, selectedHardware } = calculatorState;
