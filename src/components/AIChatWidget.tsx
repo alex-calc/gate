@@ -143,7 +143,7 @@ export function AIChatWidget({ calculatorState, isSubmitted, isOpen, locale, onO
           className="relative bg-blue-600 hover:bg-blue-700 text-white rounded-full p-4 shadow-xl flex items-center gap-2 group transition-all duration-300 hover:scale-105"
         >
           <span className="absolute inset-0 rounded-full bg-blue-600 animate-ping opacity-30" />
-          <Bot className="w-6 h-6 relative z-10" />
+          <img src="/assets/alexey.jpg" alt="Alexey" className="w-8 h-8 rounded-full object-cover border border-white/20 relative z-10" />
           <span className="hidden sm:inline relative z-10 max-w-0 overflow-hidden group-hover:max-w-md transition-all duration-300 ease-out text-sm font-bold whitespace-nowrap pl-1">
             {locale === 'ru' ? '💬 Нужна помощь? Алексей подберет комплект!' : '💬 Потрібна допомога? Олексій підбере комплект!'}
           </span>
@@ -154,8 +154,8 @@ export function AIChatWidget({ calculatorState, isSubmitted, isOpen, locale, onO
           <div className="bg-gradient-to-r from-blue-600 to-blue-800 px-4 py-3 flex justify-between items-center shadow-md z-10">
             <div className="flex items-center gap-2">
               <div className="relative">
-                <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/30">
-                  <Bot className="w-4 h-4 text-white" />
+                <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden border-2 border-white/30 shadow-sm relative shrink-0 bg-white/20">
+                  <img src="/assets/alexey.jpg" alt="Alexey" className="w-full h-full object-cover" />
                 </div>
                 <div className="w-2.5 h-2.5 bg-emerald-400 rounded-full absolute -bottom-0.5 -right-0.5 border-2 border-blue-700 animate-pulse" />
               </div>
@@ -212,8 +212,8 @@ export function AIChatWidget({ calculatorState, isSubmitted, isOpen, locale, onO
                 {displayMessages.map((msg: any) => (
                   <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                     {msg.role !== 'user' && (
-                      <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center shrink-0 mr-2 mt-1">
-                        <Bot className="w-3.5 h-3.5 text-blue-600" />
+                      <div className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 mr-2 mt-1 overflow-hidden shadow-sm border border-slate-200 bg-white">
+                        <img src="/assets/alexey.jpg" alt="Alexey" className="w-full h-full object-cover" />
                       </div>
                     )}
                     <div
@@ -236,8 +236,8 @@ export function AIChatWidget({ calculatorState, isSubmitted, isOpen, locale, onO
                 
                 {isLoading && (
                   <div className="flex justify-start">
-                    <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center shrink-0 mr-2 mt-1">
-                      <Bot className="w-3.5 h-3.5 text-blue-600" />
+                    <div className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 mr-2 mt-1 overflow-hidden shadow-sm border border-slate-200 bg-white">
+                      <img src="/assets/alexey.jpg" alt="Alexey" className="w-full h-full object-cover" />
                     </div>
                     <div className="bg-white border border-slate-200 px-4 py-3 rounded-2xl rounded-tl-sm shadow-sm flex items-center gap-1.5">
                       <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce" />
