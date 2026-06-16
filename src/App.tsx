@@ -33,6 +33,11 @@ const getHardwareCatalog = (t: any) => [
     images: [
       'https://novi-vorota.com.ua/image/cache//catalog/111/fayna/fayna-new/gospodar-500-800x800.jpg',
       'https://novi-vorota.com.ua/image/data/furn/novi-vorota-gosp/dsc_0027.jpg',
+      'https://novi-vorota.com.ua/image//catalog/111/fayna/fayna-new/listing3.jpg',
+      'https://novi-vorota.com.ua/image//catalog/111/fayna/fayna-new/listing1.jpg',
+      'https://novi-vorota.com.ua/image/data/furn/novi-vorota-gosp/dsc_0108.jpg',
+      'https://novi-vorota.com.ua/image/data/furn/novi-vorota-gosp/dsc_2583.jpg',
+      'https://novi-vorota.com.ua/image/data/furn/novi-vorota-gosp/dsc_6887.jpg',
       'https://novi-vorota.com.ua/image/data/furn/novi-vorota-gosp/1406201810.jpg'
     ],
     videoUrl: 'https://www.youtube.com/embed/EOfdSDgxY54'
