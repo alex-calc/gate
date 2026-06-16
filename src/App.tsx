@@ -269,6 +269,10 @@ function AiPromoBanner({ onOpen, t }: { onOpen: () => void, t: any }) {
           <span>{t.promoBtn}</span>
         </button>
       </div>
+    </div>
+  );
+}
+
 export default function App() {
   const [lang, setLang] = useState<'ua' | 'ru'>(() => {
     return (localStorage.getItem('lang') as 'ua' | 'ru') || 'ua';
