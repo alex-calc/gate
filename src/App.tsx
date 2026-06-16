@@ -273,6 +273,84 @@ function AiPromoBanner({ onOpen, t }: { onOpen: () => void, t: any }) {
   );
 }
 
+function HardwareCard({ hw, isSelected, lang, price, onSelect, onPlayVideo }: any) {
+  const [activeImage, setActiveImage] = useState(0);
+
+  return (
+    <div onClick={onSelect}
+      className={`border p-5 rounded-2xl cursor-pointer transition-all duration-300 flex flex-col ${
+        isSelected 
+          ? 'border-blue-500 bg-slate-900 ring-2 ring-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.4)] text-white transform scale-[1.02]' 
+          : 'border-slate-800 bg-slate-950 text-slate-300 hover:bg-slate-900 hover:border-slate-700'
+      }`}>
+      
+      {hw.images && hw.images.length > 0 && (
+        <div className="mb-4">
+          <div className="w-full h-48 sm:h-56 rounded-xl mb-3 overflow-hidden bg-white shrink-0 relative flex items-center justify-center p-2">
+            <img src={hw.images[activeImage]} alt={hw.name} className="w-full h-full object-contain transition-opacity duration-300" />
+            {isSelected && (
+              <div className="absolute top-3 right-3 bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded shadow-[0_0_10px_rgba(37,99,235,0.8)] flex items-center gap-1 z-10">
+                <CheckCircle2 className="w-3 h-3" /> {lang === 'ru' ? 'ВЫБРАНО' : 'ОБРАНО'}
+              </div>
+            )}
+          </div>
+          {hw.images.length > 1 && (
+            <div className="flex flex-row gap-2 overflow-x-auto pb-1 scrollbar-hide">
+              {hw.images.map((img: string, idx: number) => (
+                <button
+                  key={idx}
+                  onClick={(e) => { e.stopPropagation(); setActiveImage(idx); }}
+                  className={`relative shrink-0 w-12 h-12 sm:w-16 sm:h-16 rounded-lg overflow-hidden border-2 transition-all ${
+                    activeImage === idx ? 'border-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)]' : 'border-transparent opacity-60 hover:opacity-100 bg-white'
+                  }`}
+                >
+                  <img src={img} alt={`${hw.name} thumb ${idx}`} className="w-full h-full object-contain bg-white" />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      <div className="flex justify-between items-start mb-2 gap-4">
+        <h4 className={`font-bold text-lg leading-tight ${isSelected ? 'text-white' : 'text-slate-100'}`}>{hw.name}</h4>
+        <span className={`font-mono font-bold text-xl shrink-0 whitespace-nowrap ${isSelected ? 'text-blue-400 drop-shadow-[0_0_5px_rgba(96,165,250,0.8)]' : 'text-blue-500'}`}>{price} ₴</span>
+      </div>
+      
+      <p className={`text-sm mb-4 leading-relaxed ${isSelected ? 'text-slate-300' : 'text-slate-400'}`}>{hw.desc}</p>
+
+      {hw.specs && hw.specs.length > 0 && (
+        <ul className="space-y-1.5 mb-4 mt-auto">
+          {hw.specs.map((spec: string, idx: number) => (
+            <li key={idx} className="flex items-start gap-2 text-sm">
+              <div className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${isSelected ? 'bg-blue-400 shadow-[0_0_5px_rgba(96,165,250,0.8)]' : 'bg-slate-600'}`} />
+              <span className={isSelected ? 'text-slate-200' : 'text-slate-400'}>{spec}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+      
+      <div className="mt-auto pt-4 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-slate-800">
+        <div className={`text-[11px] font-mono ${isSelected ? 'text-blue-300' : 'text-slate-500'} px-2.5 py-1 rounded border ${isSelected ? 'border-blue-800 bg-slate-800' : 'border-slate-800'}`}>
+          {lang === 'ru' ? 'Толщина:' : 'Товщина:'} {hw.thickness} | {lang === 'ru' ? 'до' : 'до'} {hw.maxWeight} {lang === 'ru' ? 'кг' : 'кг'}
+        </div>
+        
+        {hw.videoUrl && (
+          <button 
+            onClick={(e) => { e.stopPropagation(); onPlayVideo(hw.videoUrl!); }}
+            className={`flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+              isSelected ? 'bg-red-600/20 text-red-400 hover:bg-red-600 hover:text-white border border-red-600/30' : 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700'
+            }`}
+          >
+            <Play className="w-3.5 h-3.5" />
+            {lang === 'ru' ? 'Смотреть видео' : 'Дивитись відео'}
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
   const [lang, setLang] = useState<'ua' | 'ru'>(() => {
     return (localStorage.getItem('lang') as 'ua' | 'ru') || 'ua';
@@ -592,65 +670,17 @@ export default function App() {
                   </div>
                 )}
                 <div className="grid gap-3">
-                    {compatibleHardware.map((hw) => {
-                      const isSelected = selectedHardware === hw.id;
-                      return (
-                        <div key={hw.id} onClick={() => setSelectedHardware(hw.id)}
-                          className={`border p-5 rounded-2xl cursor-pointer transition-all duration-300 flex flex-col ${
-                            isSelected 
-                              ? 'border-blue-500 bg-slate-900 ring-2 ring-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.4)] text-white transform scale-[1.02]' 
-                              : 'border-slate-800 bg-slate-950 text-slate-300 hover:bg-slate-900 hover:border-slate-700'
-                          }`}>
-                          
-                          {hw.images && hw.images.length > 0 && (
-                            <div className="w-full aspect-video rounded-xl mb-4 overflow-hidden bg-slate-800 shrink-0 relative">
-                              <img src={hw.images[0]} alt={hw.name} className="w-full h-full object-cover transition-transform duration-500 hover:scale-110" />
-                              {isSelected && (
-                                <div className="absolute top-3 right-3 bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded shadow-[0_0_10px_rgba(37,99,235,0.8)] flex items-center gap-1">
-                                  <CheckCircle2 className="w-3 h-3" /> {lang === 'ru' ? 'ВЫБРАНО' : 'ОБРАНО'}
-                                </div>
-                              )}
-                            </div>
-                          )}
-
-                          <div className="flex justify-between items-start mb-2 gap-4">
-                            <h4 className={`font-bold text-lg leading-tight ${isSelected ? 'text-white' : 'text-slate-100'}`}>{hw.name}</h4>
-                            <span className={`font-mono font-bold text-xl shrink-0 whitespace-nowrap ${isSelected ? 'text-blue-400 drop-shadow-[0_0_5px_rgba(96,165,250,0.8)]' : 'text-blue-500'}`}>{getHardwarePrice(hw.id, guideRailLength)} ₴</span>
-                          </div>
-                          
-                          <p className={`text-sm mb-4 leading-relaxed ${isSelected ? 'text-slate-300' : 'text-slate-400'}`}>{hw.desc}</p>
-
-                          {hw.specs && hw.specs.length > 0 && (
-                            <ul className="space-y-1.5 mb-4 mt-auto">
-                              {hw.specs.map((spec: string, idx: number) => (
-                                <li key={idx} className="flex items-start gap-2 text-sm">
-                                  <div className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${isSelected ? 'bg-blue-400 shadow-[0_0_5px_rgba(96,165,250,0.8)]' : 'bg-slate-600'}`} />
-                                  <span className={isSelected ? 'text-slate-200' : 'text-slate-400'}>{spec}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          )}
-                          
-                          <div className="mt-auto pt-4 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-slate-800">
-                            <div className={`text-[11px] font-mono ${isSelected ? 'text-blue-300' : 'text-slate-500'} px-2.5 py-1 rounded border ${isSelected ? 'border-blue-800 bg-slate-800' : 'border-slate-800'}`}>
-                              {lang === 'ru' ? 'Толщина:' : 'Товщина:'} {hw.thickness} | {lang === 'ru' ? 'до' : 'до'} {hw.maxWeight} {lang === 'ru' ? 'кг' : 'кг'}
-                            </div>
-                            
-                            {hw.videoUrl && (
-                              <button 
-                                onClick={(e) => { e.stopPropagation(); setActiveVideo(hw.videoUrl!); }}
-                                className={`flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                                  isSelected ? 'bg-red-600/20 text-red-400 hover:bg-red-600 hover:text-white border border-red-600/30' : 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700'
-                                }`}
-                              >
-                                <Play className="w-3.5 h-3.5" />
-                                {lang === 'ru' ? 'Смотреть видео' : 'Дивитись відео'}
-                              </button>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
+                    {compatibleHardware.map((hw) => (
+                      <HardwareCard 
+                        key={hw.id}
+                        hw={hw}
+                        isSelected={selectedHardware === hw.id}
+                        lang={lang}
+                        price={getHardwarePrice(hw.id, guideRailLength)}
+                        onSelect={() => setSelectedHardware(hw.id)}
+                        onPlayVideo={(url: string) => setActiveVideo(url)}
+                      />
+                    ))}
                 </div>
                 <div className="hidden sm:flex bg-slate-50 border border-slate-200 p-4 rounded-xl gap-3 items-start text-sm text-slate-700">
                   <Sparkles className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
