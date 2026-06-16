@@ -6,7 +6,7 @@ import { ShimmerButton } from './components/ui/shimmer-button';
 import {
   ShieldCheck, Wrench, Cpu, Sparkles, Phone,
   CheckCircle2, ChevronRight, Info, ArrowRight,
-  Clock, Truck, Video, Star, Award, Zap, Timer, Camera, Gift
+  Clock, Truck, Video, Star, Award, Zap, Timer, Camera, Gift, Play, X
 } from 'lucide-react';
 import { AIChatWidget } from './components/AIChatWidget';
 import { translations } from './locales';
@@ -22,10 +22,24 @@ const getEnginesCatalog = (t: any) => [
 ];
 
 const getHardwareCatalog = (t: any) => [
-  { id: 'standart-3.6', name: 'Novi Vorota Standart (3.6 мм)', maxWeight: 500, thickness: '3.6 мм', price: 3925, desc: t.catalog.hardware['standart-3.6'].desc },
-  { id: 'gospodar-4.0', name: 'Novi Vorota Gospodar (4.0 мм)', maxWeight: 500, thickness: '4.0 мм', price: 4525, desc: t.catalog.hardware['gospodar-4.0'].desc },
-  { id: 'fayna-5.0', name: 'Novi Vorota Fayna (5.0 мм)', maxWeight: 1000, thickness: '5.0 мм', price: 8757, desc: t.catalog.hardware['fayna-5.0'].desc },
-  { id: 'no-hardware', name: t.catalog.hardware['no-hardware'].name, maxWeight: 9999, thickness: '-', price: 0, desc: t.catalog.hardware['no-hardware'].desc }
+  { 
+    id: 'standart-3.6', 
+    name: 'Novi Vorota Gospodar 500 (3.6 мм)', 
+    maxWeight: 500, 
+    thickness: '3.6 мм', 
+    price: 3925, 
+    desc: t.catalog.hardware['standart-3.6'].desc,
+    specs: t.catalog.hardware['standart-3.6'].specs || [],
+    images: [
+      'https://novi-vorota.com.ua/image/cache//catalog/111/fayna/fayna-new/gospodar-500-800x800.jpg',
+      'https://novi-vorota.com.ua/image/data/furn/novi-vorota-gosp/dsc_0027.jpg',
+      'https://novi-vorota.com.ua/image/data/furn/novi-vorota-gosp/1406201810.jpg'
+    ],
+    videoUrl: 'https://www.youtube.com/embed/EOfdSDgxY54'
+  },
+  { id: 'gospodar-4.0', name: 'Novi Vorota Gospodar (4.0 мм)', maxWeight: 500, thickness: '4.0 мм', price: 4525, desc: t.catalog.hardware['gospodar-4.0'].desc, specs: [], images: [] },
+  { id: 'fayna-5.0', name: 'Novi Vorota Fayna (5.0 мм)', maxWeight: 1000, thickness: '5.0 мм', price: 8757, desc: t.catalog.hardware['fayna-5.0'].desc, specs: [], images: [] },
+  { id: 'no-hardware', name: t.catalog.hardware['no-hardware'].name, maxWeight: 9999, thickness: '-', price: 0, desc: t.catalog.hardware['no-hardware'].desc, specs: [], images: [] }
 ];
 
 function GateVisualizer({ width, weight }: { width: number, weight: number }) {
@@ -255,14 +269,11 @@ function AiPromoBanner({ onOpen, t }: { onOpen: () => void, t: any }) {
           <span>{t.promoBtn}</span>
         </button>
       </div>
-    </div>
-  );
-}
-
 export default function App() {
   const [lang, setLang] = useState<'ua' | 'ru'>(() => {
     return (localStorage.getItem('lang') as 'ua' | 'ru') || 'ua';
   });
+  const [activeVideo, setActiveVideo] = useState<string | null>(null);
 
   const handleLangChange = (l: 'ua' | 'ru') => {
     setLang(l);
@@ -577,19 +588,65 @@ export default function App() {
                   </div>
                 )}
                 <div className="grid gap-3">
-                  {compatibleHardware.map((hw) => (
-                    <div key={hw.id} onClick={() => setSelectedHardware(hw.id)}
-                      className={`border p-4 rounded-xl cursor-pointer transition-all ${
-                        selectedHardware === hw.id ? 'border-blue-600 bg-blue-50 ring-1 ring-blue-600 shadow-sm' : 'border-slate-200 bg-white hover:bg-slate-50'
-                      }`}>
-                      <div className="flex justify-between items-start mb-1 gap-4">
-                        <h4 className="font-bold text-slate-900 text-base">{hw.name}</h4>
-                        <span className="font-mono text-blue-600 font-bold text-base shrink-0 whitespace-nowrap">{getHardwarePrice(hw.id, guideRailLength)} ₴</span>
-                      </div>
-                      <p className="text-sm text-slate-700">{hw.desc}</p>
-                      <div className="text-[11px] text-slate-500 font-mono mt-2 bg-slate-100 inline-block px-2 py-0.5 rounded">{lang === 'ru' ? 'Толщина направляющей' : 'Товщина напрямної рейки'}: {hw.thickness} | {lang === 'ru' ? 'до' : 'до'} {hw.maxWeight} {lang === 'ru' ? 'кг' : 'кг'}</div>
-                    </div>
-                  ))}
+                    {compatibleHardware.map((hw) => {
+                      const isSelected = selectedHardware === hw.id;
+                      return (
+                        <div key={hw.id} onClick={() => setSelectedHardware(hw.id)}
+                          className={`border p-5 rounded-2xl cursor-pointer transition-all duration-300 flex flex-col ${
+                            isSelected 
+                              ? 'border-blue-500 bg-slate-900 ring-2 ring-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.4)] text-white transform scale-[1.02]' 
+                              : 'border-slate-800 bg-slate-950 text-slate-300 hover:bg-slate-900 hover:border-slate-700'
+                          }`}>
+                          
+                          {hw.images && hw.images.length > 0 && (
+                            <div className="w-full aspect-video rounded-xl mb-4 overflow-hidden bg-slate-800 shrink-0 relative">
+                              <img src={hw.images[0]} alt={hw.name} className="w-full h-full object-cover transition-transform duration-500 hover:scale-110" />
+                              {isSelected && (
+                                <div className="absolute top-3 right-3 bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded shadow-[0_0_10px_rgba(37,99,235,0.8)] flex items-center gap-1">
+                                  <CheckCircle2 className="w-3 h-3" /> {lang === 'ru' ? 'ВЫБРАНО' : 'ОБРАНО'}
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          <div className="flex justify-between items-start mb-2 gap-4">
+                            <h4 className={`font-bold text-lg leading-tight ${isSelected ? 'text-white' : 'text-slate-100'}`}>{hw.name}</h4>
+                            <span className={`font-mono font-bold text-xl shrink-0 whitespace-nowrap ${isSelected ? 'text-blue-400 drop-shadow-[0_0_5px_rgba(96,165,250,0.8)]' : 'text-blue-500'}`}>{getHardwarePrice(hw.id, guideRailLength)} ₴</span>
+                          </div>
+                          
+                          <p className={`text-sm mb-4 leading-relaxed ${isSelected ? 'text-slate-300' : 'text-slate-400'}`}>{hw.desc}</p>
+
+                          {hw.specs && hw.specs.length > 0 && (
+                            <ul className="space-y-1.5 mb-4 mt-auto">
+                              {hw.specs.map((spec: string, idx: number) => (
+                                <li key={idx} className="flex items-start gap-2 text-sm">
+                                  <div className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${isSelected ? 'bg-blue-400 shadow-[0_0_5px_rgba(96,165,250,0.8)]' : 'bg-slate-600'}`} />
+                                  <span className={isSelected ? 'text-slate-200' : 'text-slate-400'}>{spec}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                          
+                          <div className="mt-auto pt-4 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-slate-800">
+                            <div className={`text-[11px] font-mono ${isSelected ? 'text-blue-300' : 'text-slate-500'} px-2.5 py-1 rounded border ${isSelected ? 'border-blue-800 bg-slate-800' : 'border-slate-800'}`}>
+                              {lang === 'ru' ? 'Толщина:' : 'Товщина:'} {hw.thickness} | {lang === 'ru' ? 'до' : 'до'} {hw.maxWeight} {lang === 'ru' ? 'кг' : 'кг'}
+                            </div>
+                            
+                            {hw.videoUrl && (
+                              <button 
+                                onClick={(e) => { e.stopPropagation(); setActiveVideo(hw.videoUrl!); }}
+                                className={`flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                                  isSelected ? 'bg-red-600/20 text-red-400 hover:bg-red-600 hover:text-white border border-red-600/30' : 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700'
+                                }`}
+                              >
+                                <Play className="w-3.5 h-3.5" />
+                                {lang === 'ru' ? 'Смотреть видео' : 'Дивитись відео'}
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
                 </div>
                 <div className="hidden sm:flex bg-slate-50 border border-slate-200 p-4 rounded-xl gap-3 items-start text-sm text-slate-700">
                   <Sparkles className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
@@ -929,8 +986,19 @@ export default function App() {
         </div>
       )}
 
+      {activeVideo && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-slate-950/80 backdrop-blur-sm animate-fadeIn" onClick={() => setActiveVideo(null)}>
+          <div className="w-full max-w-4xl bg-black rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(0,0,0,0.5)] border border-slate-800 relative aspect-video animate-in zoom-in-95 duration-300" onClick={e => e.stopPropagation()}>
+            <button onClick={() => setActiveVideo(null)} className="absolute top-4 right-4 z-10 w-10 h-10 bg-black/50 hover:bg-black/80 rounded-full flex items-center justify-center text-white backdrop-blur-md transition-colors">
+              <X className="w-5 h-5" />
+            </button>
+            <iframe src={activeVideo} className="w-full h-full" frameBorder="0" allow="autoplay; encrypted-media" allowFullScreen></iframe>
+          </div>
+        </div>
+      )}
+
       <AIChatWidget 
-        calculatorState={{ gateWidth, gateWeight, selectedEngine, selectedHardware, guideRailLength }} 
+        calculatorState={{ gateWidth, gateWeight, guideRailLength, selectedEngine, selectedHardware }} 
         isSubmitted={isSubmitted} 
         isOpen={chatOpen}
         locale={lang}
