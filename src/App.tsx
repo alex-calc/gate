@@ -332,8 +332,8 @@ function HardwareCard({ hw, isSelected, lang, price, onSelect, onPlayVideo }: an
       
       {hw.images && hw.images.length > 0 && (
         <div className="mb-4">
-          <div className="w-full h-48 sm:h-56 rounded-xl mb-3 overflow-hidden bg-white shrink-0 relative flex items-center justify-center p-2">
-            <img src={hw.images[activeImage]} alt={hw.name} className="w-full h-full object-contain transition-opacity duration-300" />
+          <div className="w-full aspect-[4/3] rounded-xl mb-3 overflow-hidden bg-white shrink-0 relative flex items-center justify-center">
+            <img src={hw.images[activeImage]} alt={hw.name} className="w-full h-full object-contain p-4 transition-opacity duration-300" />
             {isSelected && (
               <div className="absolute top-3 right-3 bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded shadow-[0_0_10px_rgba(37,99,235,0.8)] flex items-center gap-1 z-10">
                 <CheckCircle2 className="w-3 h-3" /> {lang === 'ru' ? 'ВЫБРАНО' : 'ОБРАНО'}
@@ -651,9 +651,9 @@ export default function App() {
       <TrustBar t={t} />
       <AiPromoBanner onOpen={() => setChatOpen(true)} t={t} />
 
-      <section className="pb-24 max-w-6xl mx-auto px-4 relative z-10">
-        <div className="grid lg:grid-cols-3 gap-8">
-          <div id="calculator-top" className="lg:col-span-2 bg-white border border-slate-200 rounded-[2.5rem] p-8 sm:p-12 shadow-2xl">
+      <section className="pb-24 max-w-7xl mx-auto px-4 relative z-10">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 items-start">
+          <div id="calculator-top" className="xl:col-span-2 w-full bg-white border border-slate-200 rounded-[2.5rem] p-8 sm:p-12 shadow-2xl">
             <div className="flex items-center justify-between border-b border-slate-100 pb-8 mb-10 text-xs font-mono text-slate-400">
               <span className={step === 1 ? 'text-blue-600 font-bold' : ''}>{t.step1}</span>
               <ChevronRight className="w-4 h-4" />
@@ -839,7 +839,7 @@ export default function App() {
             )}
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-[2.5rem] p-8 shadow-2xl h-fit">
+          <div className="xl:col-span-1 w-full bg-white border border-slate-200 rounded-[2.5rem] p-8 shadow-2xl h-fit">
             <h3 className="text-lg font-display font-extrabold text-slate-900 mb-5 pb-4 border-b border-slate-100 flex items-center justify-between">
               <span className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-blue-600" /> {lang === 'ru' ? 'Ваша смета' : 'Ваш кошторис'}</span>
               <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2 py-1 rounded-md border border-emerald-100 flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5" /> {lang === 'ru' ? '5 лет гарантии' : '5 років гарантії'}</span>
