@@ -63,7 +63,28 @@ const getHardwareCatalog = (t: any) => [
       "https://novi-vorota.com.ua/image//catalog/111/fayna/fayna-new/listing.jpg"
     ]
   },
-  { id: 'fayna-5.0', name: 'Novi Vorota Fayna (5.0 мм)', maxWeight: 1000, thickness: '5.0 мм', price: 8757, desc: t.catalog.hardware['fayna-5.0'].desc, specs: [], images: [] },
+  { 
+    id: 'fayna-5.0', 
+    name: 'Novi Vorota Fayna 800 (5.0 мм)', 
+    maxWeight: 800, 
+    thickness: '5.0 мм', 
+    price: 8757, 
+    desc: t.catalog.hardware['fayna-5.0'].desc, 
+    specs: t.catalog.hardware['fayna-5.0'].specs || [], 
+    images: [
+      "https://novi-vorota.com.ua/image//catalog/111/fayna/fayna-new/golovnafayna800.jpg",
+      "https://novi-vorota.com.ua/image//catalog/111/fayna/fayna-new/listing2.jpg",
+      "https://novi-vorota.com.ua/image/catalog/furn_goroda/fayna600/800/dsc_0616.jpg",
+      "https://novi-vorota.com.ua/image//catalog/111/fayna/fayna-new/listingkopija303.jpg",
+      "https://novi-vorota.com.ua/image//catalog/111/fayna/fayna-new/listinggarangtija10.jpg",
+      "https://novi-vorota.com.ua/image//catalog/111/fayna/fayna-new/listing1800kg.jpg",
+      "https://novi-vorota.com.ua/image//catalog/111/fayna/fayna-new/listing4.jpg",
+      "https://novi-vorota.com.ua/image/catalog/furn_goroda/fayna600/800/verhni-roliki.jpg",
+      "https://novi-vorota.com.ua/image//catalog/111/fayna/fayna-new/listing6.jpg",
+      "https://novi-vorota.com.ua/image/catalog/furn_goroda/fayna600/800/zaglushka.jpg"
+    ],
+    videoUrl: 'https://www.youtube.com/embed/17CcES6Wczw'
+  },
   { id: 'no-hardware', name: t.catalog.hardware['no-hardware'].name, maxWeight: 9999, thickness: '-', price: 0, desc: t.catalog.hardware['no-hardware'].desc, specs: [], images: [] }
 ];
 
