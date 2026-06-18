@@ -137,7 +137,7 @@ const getEnginesCatalog = (t: any) => [
     ],
     videoUrl: "https://www.youtube.com/embed/5Z6-8IgXyq0"
   },
-  { id: 'no-engine', name: t.catalog.engines['no-engine'].name, tag: '', description: t.catalog.engines['no-engine'].desc, specs: ['-', '-', '-'], basePrice: 0, maxWeight: 9999, minWeight: 0 }
+  { id: 'no-engine', name: t.catalog.engines['no-engine'].name, tag: '', description: t.catalog.engines['no-engine'].desc, specs: t.catalog.engines['no-engine'].specs || [], basePrice: 0, maxWeight: 9999, minWeight: 0 }
 ];
 
 const getHardwareCatalog = (t: any) => [
@@ -1250,6 +1250,19 @@ function EngineCard({ engine, isSelected, lang, price, onSelect, onPlayVideo }: 
               ))}
             </div>
           )}
+        </div>
+      ) : engine.id === 'no-engine' ? (
+        <div className="w-full md:w-2/5 flex flex-col gap-3 min-w-0">
+          <div className="w-full h-48 md:h-56 bg-slate-800 border border-slate-700 rounded-lg flex flex-col items-center justify-center p-4 relative shrink-0">
+             <span className="text-sm uppercase font-bold text-slate-400 text-center tracking-widest leading-relaxed">
+               {lang === 'ru' ? 'РУЧНОЕ УПРАВЛЕНИЕ' : 'РУЧНЕ КЕРУВАННЯ'}
+             </span>
+             {isSelected && (
+              <div className="absolute top-3 right-3 bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded shadow-[0_0_10px_rgba(37,99,235,0.8)] flex items-center gap-1 z-10">
+                <CheckCircle2 className="w-3 h-3" /> {lang === 'ru' ? 'ВЫБРАНО' : 'ОБРАНО'}
+              </div>
+            )}
+          </div>
         </div>
       ) : (
         <div className="w-full md:w-2/5 flex flex-col gap-3 min-w-0">
