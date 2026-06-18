@@ -57,7 +57,28 @@ const getEnginesCatalog = (t: any) => [
     ],
     videoUrl: "https://www.youtube.com/embed/0WFEyEOBYUg"
   },
-  { id: 'miller-800', name: 'Miller Technics 800', tag: t.catalog.engines['miller-800'].tag, description: t.catalog.engines['miller-800'].desc, specs: t.catalog.engines['miller-800'].specs, basePrice: 14999, maxWeight: 800, minWeight: 0 },
+  { 
+    id: 'miller-800', 
+    name: 'Miller Technics 800', 
+    tag: t.catalog.engines['miller-800'].tag, 
+    description: t.catalog.engines['miller-800'].desc, 
+    specs: t.catalog.engines['miller-800'].specs, 
+    basePrice: 14999, 
+    maxWeight: 800, 
+    minWeight: 0,
+    images: [
+      "https://novi-vorota.com.ua/image/cache//catalog/miller800/miller800-1-800x800.jpg",
+      "https://novi-vorota.com.ua/image/cache//catalog/miller800/miller800-2-800x800.jpg",
+      "https://novi-vorota.com.ua/image/cache/catalog/miller1000/miller4-800x800.jpg",
+      "https://novi-vorota.com.ua/image/cache//catalog/miller800/miller800-3-800x800.jpg",
+      "https://novi-vorota.com.ua/image/cache//catalog/miller800/miller800-4-800x800.jpg",
+      "https://novi-vorota.com.ua/image/cache//catalog/miller800/miller800-5-800x800.jpg",
+      "https://novi-vorota.com.ua/image/cache//catalog/miller800/miller800-6-800x800.jpg",
+      "https://novi-vorota.com.ua/image/cache//catalog/miller800/miller800-7-800x800.jpg",
+      "https://novi-vorota.com.ua/image//data/image/furnitura/1miller800/dsc_0352.jpg"
+    ],
+    videoUrl: "https://www.youtube.com/embed/BrIP5fTWL78"
+  },
   { id: 'miller-1000', name: 'Miller Technics 1000 (Невбиваємий Трактор)', tag: t.catalog.engines['miller-1000'].tag, description: t.catalog.engines['miller-1000'].desc, specs: t.catalog.engines['miller-1000'].specs, basePrice: 16037, maxWeight: 1000, minWeight: 800 },
   { id: 'rotelli-1100', name: 'Rotelli Premium 1100 (Wi-Fi Inside)', tag: t.catalog.engines['rotelli-1100'].tag, description: t.catalog.engines['rotelli-1100'].desc, specs: t.catalog.engines['rotelli-1100'].specs, basePrice: 14480, maxWeight: 1100, minWeight: 0 },
   { id: 'rotelli-pro', name: 'Rotelli PRO 2000 (Масляна ванна)', tag: t.catalog.engines['rotelli-pro'].tag, description: t.catalog.engines['rotelli-pro'].desc, specs: t.catalog.engines['rotelli-pro'].specs, basePrice: 19500, maxWeight: 2000, minWeight: 800 },
