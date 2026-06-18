@@ -324,15 +324,15 @@ function HardwareCard({ hw, isSelected, lang, price, onSelect, onPlayVideo }: an
 
   return (
     <div onClick={onSelect}
-      className={`border p-6 rounded-2xl cursor-pointer transition-all duration-300 flex flex-col md:flex-row gap-6 min-w-0 overflow-hidden ${
+      className={`border w-full flex flex-col md:flex-row gap-4 p-4 rounded-xl overflow-hidden cursor-pointer transition-all duration-300 ${
         isSelected 
-          ? 'border-blue-500 bg-slate-900 ring-2 ring-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.4)] text-white transform scale-[1.02]' 
-          : 'border-slate-800 bg-slate-950 text-slate-300 hover:bg-slate-900 hover:border-slate-700'
+          ? 'border-blue-500 bg-[#0a1120] ring-2 ring-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.4)] text-white transform scale-[1.02]' 
+          : 'border-slate-800 bg-[#0a1120] text-slate-300 hover:border-slate-700'
       }`}>
       
       {hw.images && hw.images.length > 0 && (
-        <div className="w-full md:w-2/5 md:shrink-0 min-w-0 overflow-hidden">
-          <div className="w-full h-48 rounded-xl mb-3 overflow-hidden bg-white shrink-0 relative flex items-center justify-center p-2">
+        <div className="w-full md:w-2/5 flex flex-col gap-3 min-w-0">
+          <div className="w-full h-48 md:h-56 bg-white rounded-lg flex items-center justify-center p-2 relative">
             <img src={hw.images[activeImage]} alt={hw.name} className="max-h-full max-w-full object-contain transition-opacity duration-300" />
             {isSelected && (
               <div className="absolute top-3 right-3 bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded shadow-[0_0_10px_rgba(37,99,235,0.8)] flex items-center gap-1 z-10">
@@ -341,12 +341,12 @@ function HardwareCard({ hw, isSelected, lang, price, onSelect, onPlayVideo }: an
             )}
           </div>
           {hw.images.length > 1 && (
-            <div className="flex flex-row gap-2 max-w-full overflow-x-auto whitespace-nowrap snap-x scrollbar-none py-2">
+            <div className="w-full flex flex-row gap-2 overflow-x-auto scrollbar-none py-1 snap-x">
               {hw.images.map((img: string, idx: number) => (
                 <button
                   key={idx}
                   onClick={(e) => { e.stopPropagation(); setActiveImage(idx); }}
-                  className={`relative w-12 h-12 flex-shrink-0 snap-start sm:w-16 sm:h-16 rounded-lg overflow-hidden border-2 transition-all ${
+                  className={`relative w-12 h-12 flex-shrink-0 snap-start rounded-lg overflow-hidden border-2 transition-all ${
                     activeImage === idx ? 'border-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)]' : 'border-transparent opacity-60 hover:opacity-100 bg-white'
                   }`}
                 >
@@ -358,7 +358,7 @@ function HardwareCard({ hw, isSelected, lang, price, onSelect, onPlayVideo }: an
         </div>
       )}
 
-      <div className="w-full md:w-3/5 flex flex-col justify-between min-w-0">
+      <div className="w-full md:w-3/5 flex flex-col justify-between">
         <div>
           <div className="flex justify-between items-start mb-2 gap-4">
             <h4 className={`font-bold text-lg leading-tight ${isSelected ? 'text-white' : 'text-slate-100'}`}>{hw.name}</h4>
@@ -380,7 +380,7 @@ function HardwareCard({ hw, isSelected, lang, price, onSelect, onPlayVideo }: an
         </div>
         
         <div className="mt-auto pt-4 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-slate-800">
-          <div className={`text-[11px] font-mono ${isSelected ? 'text-blue-300' : 'text-slate-500'} px-2.5 py-1 rounded border ${isSelected ? 'border-blue-800 bg-slate-800' : 'border-slate-800'}`}>
+          <div className={`text-[11px] font-mono ${isSelected ? 'text-blue-300' : 'text-slate-500'} px-2.5 py-1 rounded border ${isSelected ? 'border-blue-800 bg-[#0a1120]' : 'border-slate-800'}`}>
             {lang === 'ru' ? 'Толщина:' : 'Товщина:'} {hw.thickness} | {lang === 'ru' ? 'до' : 'до'} {hw.maxWeight} {lang === 'ru' ? 'кг' : 'кг'}
           </div>
           
