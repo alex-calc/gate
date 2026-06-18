@@ -99,7 +99,25 @@ const getEnginesCatalog = (t: any) => [
     ],
     videoUrl: "https://www.youtube.com/embed/OtuHlQa76Xo"
   },
-  { id: 'rotelli-1100', name: 'Rotelli Premium 1100 (Wi-Fi Inside)', tag: t.catalog.engines['rotelli-1100'].tag, description: t.catalog.engines['rotelli-1100'].desc, specs: t.catalog.engines['rotelli-1100'].specs, basePrice: 14480, maxWeight: 1100, minWeight: 0 },
+  { 
+    id: 'rotelli-1100', 
+    name: 'Rotelli Premium 1100 (Wi-Fi Inside)', 
+    tag: t.catalog.engines['rotelli-1100'].tag, 
+    description: t.catalog.engines['rotelli-1100'].desc, 
+    specs: t.catalog.engines['rotelli-1100'].specs, 
+    basePrice: 14480, 
+    maxWeight: 1100, 
+    minWeight: 0,
+    images: [
+      "https://novi-vorota.com.ua/image/cache//catalog/111/zwar/rotelli1100/rotelliwifi1100-800x800.jpg",
+      "https://novi-vorota.com.ua/image/cache//catalog/111/zwar/rotelli1100/dvygun-800x800.jpg",
+      "https://novi-vorota.com.ua/image/cache//catalog/111/zwar/rotelli1100/reduktor-800x800.jpg",
+      "https://novi-vorota.com.ua/image/cache//catalog/111/zwar/rotelli1100/plata-800x800.jpg",
+      "https://novi-vorota.com.ua/image/cache//catalog/111/zwar/rotelli1100/magnity-800x800.jpg",
+      "https://novi-vorota.com.ua/image/cache//catalog/111/zwar/rotelli1100/pult-800x800.jpg"
+    ],
+    videoUrl: "https://www.youtube.com/embed/EGLj9cHMm1g"
+  },
   { id: 'rotelli-pro', name: 'Rotelli PRO 2000 (Масляна ванна)', tag: t.catalog.engines['rotelli-pro'].tag, description: t.catalog.engines['rotelli-pro'].desc, specs: t.catalog.engines['rotelli-pro'].specs, basePrice: 19500, maxWeight: 2000, minWeight: 800 },
   { id: 'no-engine', name: t.catalog.engines['no-engine'].name, tag: '', description: t.catalog.engines['no-engine'].desc, specs: ['-', '-', '-'], basePrice: 0, maxWeight: 9999, minWeight: 0 }
 ];
