@@ -79,7 +79,26 @@ const getEnginesCatalog = (t: any) => [
     ],
     videoUrl: "https://www.youtube.com/embed/BrIP5fTWL78"
   },
-  { id: 'miller-1000', name: 'Miller Technics 1000 (Невбиваємий Трактор)', tag: t.catalog.engines['miller-1000'].tag, description: t.catalog.engines['miller-1000'].desc, specs: t.catalog.engines['miller-1000'].specs, basePrice: 16037, maxWeight: 1000, minWeight: 800 },
+  { 
+    id: 'miller-1000', 
+    name: 'Miller Technics 1000 (Невбиваємий Трактор)', 
+    tag: t.catalog.engines['miller-1000'].tag, 
+    description: t.catalog.engines['miller-1000'].desc, 
+    specs: t.catalog.engines['miller-1000'].specs, 
+    basePrice: 16037, 
+    maxWeight: 1000, 
+    minWeight: 800,
+    images: [
+      "https://novi-vorota.com.ua/image/cache//catalog/miller1000/miller1-800x800.jpg",
+      "https://novi-vorota.com.ua/image/cache//catalog/miller1000/miller3-800x800.jpg",
+      "https://novi-vorota.com.ua/image/cache/catalog/miller1000/miller_1000_350v-800x800.png",
+      "https://novi-vorota.com.ua/image/cache//catalog/miller1000/miller5-800x800.jpg",
+      "https://novi-vorota.com.ua/image/cache//catalog/miller1000/miller6-800x800.jpg",
+      "https://novi-vorota.com.ua/image/cache//catalog/miller1000/miller7-800x800.jpg",
+      "https://novi-vorota.com.ua/image/cache//catalog/miller1000/miller8-800x800.jpg"
+    ],
+    videoUrl: "https://www.youtube.com/embed/OtuHlQa76Xo"
+  },
   { id: 'rotelli-1100', name: 'Rotelli Premium 1100 (Wi-Fi Inside)', tag: t.catalog.engines['rotelli-1100'].tag, description: t.catalog.engines['rotelli-1100'].desc, specs: t.catalog.engines['rotelli-1100'].specs, basePrice: 14480, maxWeight: 1100, minWeight: 0 },
   { id: 'rotelli-pro', name: 'Rotelli PRO 2000 (Масляна ванна)', tag: t.catalog.engines['rotelli-pro'].tag, description: t.catalog.engines['rotelli-pro'].desc, specs: t.catalog.engines['rotelli-pro'].specs, basePrice: 19500, maxWeight: 2000, minWeight: 800 },
   { id: 'no-engine', name: t.catalog.engines['no-engine'].name, tag: '', description: t.catalog.engines['no-engine'].desc, specs: ['-', '-', '-'], basePrice: 0, maxWeight: 9999, minWeight: 0 }
