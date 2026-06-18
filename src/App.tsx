@@ -42,7 +42,27 @@ const getHardwareCatalog = (t: any) => [
     ],
     videoUrl: 'https://www.youtube.com/embed/EOfdSDgxY54'
   },
-  { id: 'gospodar-4.0', name: 'Novi Vorota Gospodar (4.0 мм)', maxWeight: 500, thickness: '4.0 мм', price: 4525, desc: t.catalog.hardware['gospodar-4.0'].desc, specs: [], images: [] },
+  { 
+    id: 'gospodar-4.0', 
+    name: 'Novi Vorota Gospodar 600 (4.0 мм)', 
+    maxWeight: 600, 
+    thickness: '4.0 мм', 
+    price: 4525, 
+    desc: t.catalog.hardware['gospodar-4.0'].desc, 
+    specs: t.catalog.hardware['gospodar-4.0'].specs || [], 
+    images: [
+      "https://novi-vorota.com.ua/image//catalog/111/fayna/fayna-new/gospodar-600.jpg",
+      "https://novi-vorota.com.ua/image//catalog/111/fayna/fayna-new/listing1600kg.jpg",
+      "https://novi-vorota.com.ua/image//catalog/furn_goroda/gospodar-600/profil-razm.jpg",
+      "https://novi-vorota.com.ua/image//catalog/111/fayna/fayna-new/listingkopija302.jpg",
+      "https://novi-vorota.com.ua/image//catalog/furn_goroda/gospodar-600/dsc_0092.jpg",
+      "https://novi-vorota.com.ua/image//catalog/furn_goroda/gospodar-600/dsc_0126.jpg",
+      "https://novi-vorota.com.ua/image//catalog/111/fayna/fayna-new/listing4.jpg",
+      "https://novi-vorota.com.ua/image//catalog/111/fayna/fayna-new/listing6.jpg",
+      "https://novi-vorota.com.ua/image//catalog/furn_goroda/gospodar-600/1406201811.jpg",
+      "https://novi-vorota.com.ua/image//catalog/111/fayna/fayna-new/listing.jpg"
+    ]
+  },
   { id: 'fayna-5.0', name: 'Novi Vorota Fayna (5.0 мм)', maxWeight: 1000, thickness: '5.0 мм', price: 8757, desc: t.catalog.hardware['fayna-5.0'].desc, specs: [], images: [] },
   { id: 'no-hardware', name: t.catalog.hardware['no-hardware'].name, maxWeight: 9999, thickness: '-', price: 0, desc: t.catalog.hardware['no-hardware'].desc, specs: [], images: [] }
 ];
