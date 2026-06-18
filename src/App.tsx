@@ -324,14 +324,14 @@ function HardwareCard({ hw, isSelected, lang, price, onSelect, onPlayVideo }: an
 
   return (
     <div onClick={onSelect}
-      className={`border p-6 rounded-2xl cursor-pointer transition-all duration-300 flex flex-col md:flex-row gap-6 ${
+      className={`border p-6 rounded-2xl cursor-pointer transition-all duration-300 flex flex-col md:flex-row gap-6 min-w-0 overflow-hidden ${
         isSelected 
           ? 'border-blue-500 bg-slate-900 ring-2 ring-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.4)] text-white transform scale-[1.02]' 
           : 'border-slate-800 bg-slate-950 text-slate-300 hover:bg-slate-900 hover:border-slate-700'
       }`}>
       
       {hw.images && hw.images.length > 0 && (
-        <div className="w-full md:w-2/5 md:shrink-0 min-w-0">
+        <div className="w-full md:w-2/5 md:shrink-0 min-w-0 overflow-hidden">
           <div className="w-full h-48 rounded-xl mb-3 overflow-hidden bg-white shrink-0 relative flex items-center justify-center p-2">
             <img src={hw.images[activeImage]} alt={hw.name} className="max-h-full max-w-full object-contain transition-opacity duration-300" />
             {isSelected && (
