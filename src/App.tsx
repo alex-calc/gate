@@ -320,12 +320,12 @@ function HardwareCard({ hw, isSelected, lang, price, onSelect, onPlayVideo }: an
             )}
           </div>
           {hw.images.length > 1 && (
-            <div className="flex flex-row gap-2 overflow-x-auto pb-1 scrollbar-hide">
+            <div className="flex flex-row gap-2 max-w-full overflow-x-auto whitespace-nowrap snap-x scrollbar-none py-2">
               {hw.images.map((img: string, idx: number) => (
                 <button
                   key={idx}
                   onClick={(e) => { e.stopPropagation(); setActiveImage(idx); }}
-                  className={`relative shrink-0 w-12 h-12 sm:w-16 sm:h-16 rounded-lg overflow-hidden border-2 transition-all ${
+                  className={`relative w-12 h-12 flex-shrink-0 snap-start sm:w-16 sm:h-16 rounded-lg overflow-hidden border-2 transition-all ${
                     activeImage === idx ? 'border-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)]' : 'border-transparent opacity-60 hover:opacity-100 bg-white'
                   }`}
                 >
@@ -818,7 +818,7 @@ export default function App() {
             )}
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-[2.5rem] p-8 shadow-2xl h-fit sticky top-20">
+          <div className="bg-white border border-slate-200 rounded-[2.5rem] p-8 shadow-2xl h-fit">
             <h3 className="text-lg font-display font-extrabold text-slate-900 mb-5 pb-4 border-b border-slate-100 flex items-center justify-between">
               <span className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-blue-600" /> {lang === 'ru' ? 'Ваша смета' : 'Ваш кошторис'}</span>
               <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2 py-1 rounded-md border border-emerald-100 flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5" /> {lang === 'ru' ? '5 лет гарантии' : '5 років гарантії'}</span>
