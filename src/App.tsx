@@ -137,7 +137,7 @@ const getEnginesCatalog = (t: any) => [
     ],
     videoUrl: "https://www.youtube.com/embed/5Z6-8IgXyq0"
   },
-  { id: 'no-engine', name: t.catalog.engines['no-engine'].name, tag: '', description: t.catalog.engines['no-engine'].desc, specs: t.catalog.engines['no-engine'].specs || [], basePrice: 0, maxWeight: 9999, minWeight: 0 }
+  { id: 'no-engine', name: t.catalog.engines['no-engine'].name, tag: '', description: t.catalog.engines['no-engine'].desc, specs: t.catalog.engines['no-engine'].specs || [], basePrice: 0, maxWeight: 9999, minWeight: 0, images: ['/no-motor.jpg'] }
 ];
 
 const getHardwareCatalog = (t: any) => [
