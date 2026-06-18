@@ -118,7 +118,25 @@ const getEnginesCatalog = (t: any) => [
     ],
     videoUrl: "https://www.youtube.com/embed/EGLj9cHMm1g"
   },
-  { id: 'rotelli-pro', name: 'Rotelli PRO 2000 (Масляна ванна)', tag: t.catalog.engines['rotelli-pro'].tag, description: t.catalog.engines['rotelli-pro'].desc, specs: t.catalog.engines['rotelli-pro'].specs, basePrice: 19500, maxWeight: 2000, minWeight: 800 },
+  { 
+    id: 'rotelli-pro', 
+    name: 'Rotelli PRO 2000 (Масляна ванна)', 
+    tag: t.catalog.engines['rotelli-pro'].tag, 
+    description: t.catalog.engines['rotelli-pro'].desc, 
+    specs: t.catalog.engines['rotelli-pro'].specs, 
+    basePrice: 19500, 
+    maxWeight: 2000, 
+    minWeight: 800,
+    images: [
+      "https://novi-vorota.com.ua/image/cache//catalog/rotelli-2000/rot2000-1-800x800.jpg",
+      "https://novi-vorota.com.ua/image/cache//catalog/111/rotelli/novivorota_20260406_155357_0000-800x800.png",
+      "https://novi-vorota.com.ua/image/cache//catalog/rotelli-2000/rot2000-2-800x800.jpg",
+      "https://novi-vorota.com.ua/image/cache//catalog/rotelli-2000/rot2000-3-800x800.jpg",
+      "https://novi-vorota.com.ua/image/cache//catalog/rotelli-2000/rot2000-7-800x800.jpg",
+      "https://novi-vorota.com.ua/image/cache//catalog/rotelli-2000/rot2000-6-800x800.jpg"
+    ],
+    videoUrl: "https://www.youtube.com/embed/5Z6-8IgXyq0"
+  },
   { id: 'no-engine', name: t.catalog.engines['no-engine'].name, tag: '', description: t.catalog.engines['no-engine'].desc, specs: ['-', '-', '-'], basePrice: 0, maxWeight: 9999, minWeight: 0 }
 ];
 
