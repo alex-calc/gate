@@ -12,7 +12,30 @@ import { AIChatWidget } from './components/AIChatWidget';
 import { translations } from './locales';
 
 const getEnginesCatalog = (t: any) => [
-  { id: 'edinger-s8', name: 'Edinger S8 (Wi-Fi Inside)', tag: t.catalog.engines['edinger-s8'].tag, description: t.catalog.engines['edinger-s8'].desc, specs: t.catalog.engines['edinger-s8'].specs, basePrice: 9861, maxWeight: 800, minWeight: 0 },
+  { 
+    id: 'edinger-s8', 
+    name: 'Edinger S8 (Wi-Fi Inside)', 
+    tag: t.catalog.engines['edinger-s8'].tag, 
+    description: t.catalog.engines['edinger-s8'].desc, 
+    specs: t.catalog.engines['edinger-s8'].specs, 
+    basePrice: 9861, 
+    maxWeight: 800, 
+    minWeight: 0,
+    images: [
+      "https://novi-vorota.com.ua/image/catalog/avtomatika-raspashnih/s8+wi-fi/edingers8wifiinside-1.jpg",
+      "https://novi-vorota.com.ua/image/catalog/avtomatika-raspashnih/s8+wi-fi/edingers8wifiinside-5.jpg",
+      "https://novi-vorota.com.ua/image/catalog/avtomatika-raspashnih/s8+wi-fi/edingers8wifiinside-4.jpg",
+      "https://novi-vorota.com.ua/image/catalog/edinger-s8/s8-7.jpg",
+      "https://novi-vorota.com.ua/image/catalog/edinger-s8/s8-5.jpg",
+      "https://novi-vorota.com.ua/image/cache/catalog/avtomatika-raspashnih/s8%2Bwi-fi/edingers8wifiinside-3-800x800.jpg",
+      "https://novi-vorota.com.ua/image/cache/catalog/edinger-s8/s8-3-800x800.jpg",
+      "https://novi-vorota.com.ua/image/cache//catalog/edinger-s8/s8-1-800x800.jpg",
+      "https://novi-vorota.com.ua/image/cache//catalog/edinger-s8/s8-4-800x800.jpg",
+      "https://novi-vorota.com.ua/image/catalog/edinger-a8/edinger-s8/dsc_002.jpg",
+      "https://novi-vorota.com.ua/image/catalog/edinger-a8/edinger-s8/dsc_0170.jpg"
+    ],
+    videoUrl: "https://www.youtube.com/embed/D3pZUKsHPMU"
+  },
   { id: 'edinger-i10', name: 'Edinger I10 (Wi-Fi Inside)', tag: t.catalog.engines['edinger-i10'].tag, description: t.catalog.engines['edinger-i10'].desc, specs: t.catalog.engines['edinger-i10'].specs, basePrice: 10380, maxWeight: 1000, minWeight: 0 },
   { id: 'miller-800', name: 'Miller Technics 800', tag: t.catalog.engines['miller-800'].tag, description: t.catalog.engines['miller-800'].desc, specs: t.catalog.engines['miller-800'].specs, basePrice: 14999, maxWeight: 800, minWeight: 0 },
   { id: 'miller-1000', name: 'Miller Technics 1000 (Невбиваємий Трактор)', tag: t.catalog.engines['miller-1000'].tag, description: t.catalog.engines['miller-1000'].desc, specs: t.catalog.engines['miller-1000'].specs, basePrice: 16037, maxWeight: 1000, minWeight: 800 },
@@ -759,38 +782,15 @@ export default function App() {
                 )}
                 <div className="grid gap-3">
                   {compatibleEngines.map((engine) => (
-                    <div key={engine.id} onClick={() => setSelectedEngine(engine.id)}
-                      className={`border p-4 rounded-xl cursor-pointer transition-all flex gap-4 ${
-                        selectedEngine === engine.id ? 'border-blue-600 bg-blue-50 ring-1 ring-blue-600 shadow-sm' : 'border-slate-200 bg-white hover:bg-slate-50'
-                      }`}>
-                      <div className="hidden sm:flex w-24 h-24 shrink-0 bg-slate-100 border border-slate-200 rounded-xl flex-col items-center justify-center text-slate-400">
-                        <Camera className="w-6 h-6 mb-1.5 opacity-60" />
-                        <span className="text-[9px] uppercase tracking-wider font-bold">{lang === 'ru' ? 'Фото' : 'Фото'}</span>
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-2 gap-2 sm:gap-4">
-                          <h4 className="font-bold text-slate-900 text-base flex flex-wrap items-center gap-2">
-                            {engine.name}
-                            {engine.tag && (
-                              <span className="bg-blue-100 text-blue-700 text-[10px] px-2 py-0.5 rounded border border-blue-200 font-mono whitespace-nowrap font-bold">{engine.tag}</span>
-                            )}
-                          </h4>
-                          <span className="font-mono text-blue-600 font-bold text-base sm:text-lg shrink-0 whitespace-nowrap">{engine.basePrice} ₴</span>
-                        </div>
-                        <p className="text-sm text-slate-700 leading-relaxed">{engine.description}</p>
-                        <div className="flex flex-wrap gap-2 mt-2.5">
-                          <div className="text-[11px] text-slate-500 font-mono bg-slate-100 inline-block px-2.5 py-1 rounded-md border border-slate-200">
-                            {engine.specs.join(' | ')}
-                          </div>
-                          {!engine.id.includes('no-engine') && (
-                            <div className="text-[11px] text-emerald-800 font-bold flex items-center gap-1 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200 shadow-sm">
-                              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" /> 
-                              {engine.id.includes('miller') ? t.engineSpecsPrefix : t.engineSpecsDefault}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
+                    <EngineCard 
+                      key={engine.id}
+                      engine={engine}
+                      isSelected={selectedEngine === engine.id}
+                      lang={lang}
+                      price={engine.basePrice}
+                      onSelect={() => setSelectedEngine(engine.id)}
+                      onPlayVideo={(url: string) => setActiveVideo(url)}
+                    />
                   ))}
                 </div>
 
@@ -1097,6 +1097,110 @@ export default function App() {
         </div>
       </div>
 
+    </div>
+  );
+}
+
+function EngineCard({ engine, isSelected, lang, price, onSelect, onPlayVideo }: any) {
+  const [activeImage, setActiveImage] = useState(0);
+
+  return (
+    <div onClick={onSelect}
+      className={`border w-full flex flex-col md:flex-row gap-4 p-4 rounded-xl overflow-hidden cursor-pointer transition-all duration-300 ${
+        isSelected 
+          ? 'border-blue-500 bg-[#0a1120] ring-2 ring-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.4)] text-white transform scale-[1.02]' 
+          : 'border-slate-800 bg-[#0a1120] text-slate-300 hover:border-slate-700'
+      }`}>
+      
+      {engine.images && engine.images.length > 0 ? (
+        <div className="w-full md:w-2/5 flex flex-col gap-3 min-w-0">
+          <div className="w-full h-48 md:h-56 bg-white rounded-lg flex items-center justify-center p-2 relative shrink-0">
+            <img src={engine.images[activeImage]} alt={engine.name} className="max-h-full max-w-full object-contain transition-opacity duration-300" />
+            {isSelected && (
+              <div className="absolute top-3 right-3 bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded shadow-[0_0_10px_rgba(37,99,235,0.8)] flex items-center gap-1 z-10">
+                <CheckCircle2 className="w-3 h-3" /> {lang === 'ru' ? 'ВЫБРАНО' : 'ОБРАНО'}
+              </div>
+            )}
+          </div>
+          {engine.images.length > 1 && (
+            <div className="w-full flex flex-row gap-2 overflow-x-auto scrollbar-none py-1 snap-x">
+              {engine.images.map((img: string, idx: number) => (
+                <button
+                  key={idx}
+                  onClick={(e) => { e.stopPropagation(); setActiveImage(idx); }}
+                  className={`relative w-12 h-12 flex-shrink-0 snap-start rounded-lg overflow-hidden border-2 transition-all ${
+                    activeImage === idx ? 'border-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)]' : 'border-transparent opacity-60 hover:opacity-100 bg-white'
+                  }`}
+                >
+                  <img src={img} alt={`${engine.name} thumb ${idx}`} className="w-full h-full object-contain bg-white" />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="w-full md:w-2/5 flex flex-col gap-3 min-w-0">
+          <div className="w-full h-48 md:h-56 bg-slate-900 border border-slate-800 rounded-lg flex flex-col items-center justify-center p-4 relative shrink-0">
+             <Camera className="w-8 h-8 text-slate-700 mb-2" />
+             <span className="text-[10px] uppercase font-bold text-slate-600">{lang === 'ru' ? 'ФОТО' : 'ФОТО'}</span>
+             {isSelected && (
+              <div className="absolute top-3 right-3 bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded shadow-[0_0_10px_rgba(37,99,235,0.8)] flex items-center gap-1 z-10">
+                <CheckCircle2 className="w-3 h-3" /> {lang === 'ru' ? 'ВЫБРАНО' : 'ОБРАНО'}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      <div className="w-full md:w-3/5 flex flex-col justify-between">
+        <div>
+          <div className="flex justify-between items-start mb-2 gap-4">
+            <h4 className={`font-bold text-lg leading-tight flex flex-wrap items-center gap-2 ${isSelected ? 'text-white' : 'text-slate-100'}`}>
+              {engine.name}
+              {engine.tag && (
+                <span className="bg-blue-100 text-blue-700 text-[10px] px-2 py-0.5 rounded border border-blue-200 font-mono whitespace-nowrap font-bold">{engine.tag}</span>
+              )}
+            </h4>
+            <span className={`font-mono font-bold text-xl shrink-0 whitespace-nowrap ${isSelected ? 'text-blue-400 drop-shadow-[0_0_5px_rgba(96,165,250,0.8)]' : 'text-blue-500'}`}>{price} ₴</span>
+          </div>
+          
+          <p className={`text-sm mb-4 leading-relaxed ${isSelected ? 'text-slate-300' : 'text-slate-400'}`}>{engine.description}</p>
+
+          {engine.specs && engine.specs.length > 0 && (
+            <ul className="space-y-1.5 mb-4">
+              {engine.specs.map((spec: string, idx: number) => (
+                <li key={idx} className="flex items-start gap-2 text-sm">
+                  <div className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${isSelected ? 'bg-blue-400 shadow-[0_0_5px_rgba(96,165,250,0.8)]' : 'bg-slate-600'}`} />
+                  <span className={isSelected ? 'text-slate-200' : 'text-slate-400'}>{spec}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+        
+        <div className="mt-auto pt-4 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-slate-800">
+          {!engine.id.includes('no-engine') ? (
+            <div className={`text-[11px] font-bold flex items-center gap-1.5 px-3 py-1.5 rounded-md border shadow-sm ${isSelected ? 'bg-emerald-900/30 border-emerald-500/50 text-emerald-400' : 'bg-emerald-50 border-emerald-200 text-emerald-800'}`}>
+              <ShieldCheck className="w-3.5 h-3.5" /> 
+              {engine.id.includes('miller') ? (lang === 'ru' ? 'Металлические шестерни (Латунь/Сталь)' : 'Металеві шестерні (Латунь/Сталь)') : (lang === 'ru' ? '100% металл редуктора' : '100% метал редуктора')}
+            </div>
+          ) : (
+            <div />
+          )}
+          
+          {engine.videoUrl && (
+            <button 
+              onClick={(e) => { e.stopPropagation(); onPlayVideo(engine.videoUrl!); }}
+              className={`flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                isSelected ? 'bg-red-600/20 text-red-400 hover:bg-red-600 hover:text-white border border-red-600/30' : 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700'
+              }`}
+            >
+              <Play className="w-3.5 h-3.5" />
+              {lang === 'ru' ? 'Смотреть видео' : 'Дивитись відео'}
+            </button>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
