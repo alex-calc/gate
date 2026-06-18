@@ -331,7 +331,7 @@ function HardwareCard({ hw, isSelected, lang, price, onSelect, onPlayVideo }: an
       }`}>
       
       {hw.images && hw.images.length > 0 && (
-        <div className="w-full md:w-2/5 flex-shrink-0">
+        <div className="w-full md:w-2/5 md:shrink-0 min-w-0">
           <div className="w-full h-48 rounded-xl mb-3 overflow-hidden bg-white shrink-0 relative flex items-center justify-center p-2">
             <img src={hw.images[activeImage]} alt={hw.name} className="max-h-full max-w-full object-contain transition-opacity duration-300" />
             {isSelected && (
@@ -358,7 +358,7 @@ function HardwareCard({ hw, isSelected, lang, price, onSelect, onPlayVideo }: an
         </div>
       )}
 
-      <div className="w-full md:w-3/5 flex flex-col justify-between">
+      <div className="w-full md:w-3/5 flex flex-col justify-between min-w-0">
         <div>
           <div className="flex justify-between items-start mb-2 gap-4">
             <h4 className={`font-bold text-lg leading-tight ${isSelected ? 'text-white' : 'text-slate-100'}`}>{hw.name}</h4>
