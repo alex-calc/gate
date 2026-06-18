@@ -6,7 +6,7 @@ import { ShimmerButton } from './components/ui/shimmer-button';
 import {
   ShieldCheck, Wrench, Cpu, Sparkles, Phone,
   CheckCircle2, ChevronRight, Info, ArrowRight,
-  Clock, Truck, Video, Star, Award, Zap, Timer, Camera, Gift, Play, X
+  Clock, Truck, Video, Star, Award, Zap, Timer, Camera, Gift, Play, X, Settings
 } from 'lucide-react';
 import { AIChatWidget } from './components/AIChatWidget';
 import { translations } from './locales';
@@ -838,7 +838,23 @@ export default function App() {
                     {t.hardwareHeavyWarn.replace('{weight}', gateWeight.toString())}
                   </div>
                 )}
-                <div className="grid gap-3">
+                {gateWeight > 800 ? (
+                  <div className="flex flex-col items-center justify-center p-8 bg-[#0a1120] border border-slate-800 rounded-2xl text-center shadow-lg">
+                    <div className="bg-amber-500/10 p-4 rounded-full mb-4">
+                      <Settings className="w-12 h-12 text-amber-500" />
+                    </div>
+                    <h4 className="text-xl font-bold text-white mb-3">{t.hardwareHeavyWarningTitle}</h4>
+                    <p className="text-slate-400 mb-4 text-sm max-w-2xl mx-auto leading-relaxed">{t.hardwareHeavyWarningText}</p>
+                    <div className="bg-slate-800/50 p-4 rounded-xl border border-slate-700 max-w-2xl w-full mb-6 text-sm text-slate-300">
+                      {t.hardwareHeavyWarningCall}
+                    </div>
+                    <a href="tel:+380958769000" className="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-8 rounded-xl transition-all shadow-md shadow-blue-900/20">
+                      <Phone className="w-5 h-5" />
+                      +38 (095) 876-9000
+                    </a>
+                  </div>
+                ) : (
+                  <div className="grid gap-3">
                     {compatibleHardware.map((hw) => (
                       <HardwareCard 
                         key={hw.id}
@@ -850,7 +866,8 @@ export default function App() {
                         onPlayVideo={(url: string) => setActiveVideo(url)}
                       />
                     ))}
-                </div>
+                  </div>
+                )}
                 <div className="hidden sm:flex bg-slate-50 border border-slate-200 p-4 rounded-xl gap-3 items-start text-sm text-slate-700">
                   <Sparkles className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
                   <p>
